@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build":  "webpack --config webpack.conf.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "server": "node index.js",
     "client": "npm start --prefix client",
