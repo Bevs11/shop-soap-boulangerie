@@ -5,17 +5,16 @@ const mongoose = require('mongoose');
 const dotenv = require("dotenv");
 const helmet = require('helmet');
 
-// routes
+// routes import
 const productRoute = require('./routes/product');
 const userRoute = require('./routes/user');
 const orderRoute = require('./routes/order');
 const emailRoute = require('./routes/email');
 
-
 dotenv.config();
 
 const server = express();
-const PORT   = process.env.PORT || 8000;
+const PORT   = 8000;
 
 // mongoose connection
 mongoose.connect(process.env.MONGO_URL)
@@ -30,6 +29,7 @@ server.get('/', (request, response) => {
     response.status( 200 ).send('Welcome to express app');
 });
 
+// enpoint call
 server.use('/api/v1/products', productRoute);
 server.use('/api/v1/user', userRoute);
 server.use('/api/v1/orders', orderRoute);
