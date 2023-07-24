@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const dotenv = require("dotenv");
 const helmet = require('helmet');
 
-    //routes
+// routes
 const productRoute = require('./routes/product');
 const userRoute = require('./routes/user');
 const orderRoute = require('./routes/order');
@@ -15,10 +15,12 @@ const emailRoute = require('./routes/email');
 dotenv.config();
 
 const server = express();
-const PORT   = 8010;
+const PORT   = process.env.PORT || 8000;
 
-mongoose
-.connect(process.env.MONGO_URL);
+// mongoose connection
+mongoose.connect(process.env.MONGO_URL)
+    .then(()=> console.log("database connection SUCCESSFUL"))
+    .catch((error) => console.log(`database connection ERROR: ${error}`));
 
 server.use( helmet() );
 server.use( bodyParser.json() ); // This solves getting the body of the request
