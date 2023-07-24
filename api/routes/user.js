@@ -4,24 +4,12 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { verify } = require("../middlewares/auth");
 
-// Registration
-// TEST URL: http://localhost:8010/api/v1/user/register
-// TEST URL - render: https://shop-soap-boulangerie-api.onrender.com/api/v1/user/register
-/*
-    {
-        "username": "no3",
-        "password": "password",
-        "firstname": "bronya",
-        "lastname": "rand",
-        "email": "hai",
-        "isAdmin": true,
-        "isActive": true
-    }
-    */
+// POST registration
 router.post("/register", (request, response) => {
+  
   // When data body is complete: username, password, firstname, lastname, email
   if (request.body.username && request.body.password && request.body.firstname && request.body.lastname && request.body.email ){
-    
+
     // hash password 10x
     bcrypt.hash(request.body.password, 10).then((hash, err) => {
       const newUser = new User({
@@ -33,7 +21,8 @@ router.post("/register", (request, response) => {
         isAdmin: request.body.isAdmin,
         isActive: request.body.isActive,
       });
-  
+      
+      // promise save newUser to DB and catch if error
       try {
         newUser.save().then((data) => {
           response.status(201).send({ message: "User Registration Successful" });
@@ -50,9 +39,8 @@ router.post("/register", (request, response) => {
   
 });
 
-// login
-// TODO: change status to correct one
-// TEST URL: http://localhost:8010/api/v1/user/login
+// POST login
+// TEST URL: http://localhost:8000/api/v1/user/login
 // TEST URL - render: https://shop-soap-boulangerie-api.onrender.com/api/v1/user/login
 //{"username": "no5", "password": "password"}
 router.post("/login", (request, response) => {
@@ -89,7 +77,7 @@ router.post("/login", (request, response) => {
 });
 
 //get user
-// TEST URL: http://localhost:8010/api/v1/user/rockstar
+// TEST URL: http://localhost:8000/api/v1/user/rockstar
 // TEST URL - render: https://shop-soap-boulangerie-api.onrender.com/api/v1/user/rockstar
 // Authorization : Bearers eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvY2tzdGFyIiwiaWQiOiI2NDY2NGI1OTMyOWNkOWIwMTc1ZjU0YjQiLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNjg0NzQ2Nzc1fQ.hIyPFL8QVmTZxBEXm7hu9r1DYjfUlOYzQ9ygjjQc9g4
 router.get(`/:username`, verify, (request, response) => {
