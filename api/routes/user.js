@@ -25,7 +25,7 @@ router.post("/register", (request, response) => {
       // promise save newUser to DB and catch if error
       try {
         newUser.save().then((data) => {
-          response.status(201).send({ message: "User Registration Successful" });
+          response.status(201).send({ message: "User Registration SUCCESSFUL" });
         });
       } catch (error) {
         response.status(500).send({ errormessage: error });
@@ -34,27 +34,26 @@ router.post("/register", (request, response) => {
 
   } else {
     // When data is incomplete
-    response.status(400).send({ errormessage: "Please complete data"});
+    response.status(400).send({ errormessage: "ERROR! Please complete data"});
   }
   
 });
 
 // POST login
-// TEST URL: http://localhost:8000/api/v1/user/login
-// TEST URL - render: https://shop-soap-boulangerie-api.onrender.com/api/v1/user/login
-//{"username": "no5", "password": "password"}
 router.post("/login", (request, response) => {
+
+  // find user using findOne 
   User.findOne({ username: request.body.username }).then((dbResponse) => {
-    if (!dbResponse) {
-      return response.status(404).send({ error: "user does not exist" });
-    } else {
+    // if there is a username that exist
+    if (dbResponse) {
+      // check in bcrypt.compare if password and hash is correct
       bcrypt
         .compare(request.body.password, dbResponse.password)
         .then((isValid) => {
           if (!isValid) {
             response.status(404).send({ error: "invalid password" });
           } else {
-            // console.log(process.env.SEC_KEY);
+
             const accessToken = jwt.sign(
               {
                 username: dbResponse.username,
@@ -72,6 +71,10 @@ router.post("/login", (request, response) => {
             });
           }
         });
+      
+    } else {
+      //if no such username exist return error message
+      return response.status(404).send({ error: "user does not exist" });
     }
   });
 });
