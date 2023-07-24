@@ -2,7 +2,7 @@ const router = require("express").Router();
 const User = require("../models/UserModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { verify } = require("../middlewares/auth");
+const { verify, verifyTokenAndAuthorize } = require("../middlewares/auth");
 
 // POST registration
 router.post("/register", (request, response) => {
@@ -57,14 +57,14 @@ router.post("/login", (request, response) => {
                 id: dbResponse._id,
                 isAdmin: dbResponse.isAdmin,
               },
-              process.env.SEC_KEY
+              process.env.SEC_KEY, {expiresIn: "3d"}
             );
-
+            
             response.status(200).send({
               username: dbResponse.username,
               id: dbResponse._id,
               isAdmin: dbResponse.isAdmin,
-              token: accessToken,
+              token: accessToken
             });
           } else {
             // if password and hash is not valid send error message
@@ -79,24 +79,22 @@ router.post("/login", (request, response) => {
   });
 });
 
-//get user
-// TEST URL: http://localhost:8000/api/v1/user/rockstar
-// TEST URL - render: https://shop-soap-boulangerie-api.onrender.com/api/v1/user/rockstar
-// Authorization : Bearers eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvY2tzdGFyIiwiaWQiOiI2NDY2NGI1OTMyOWNkOWIwMTc1ZjU0YjQiLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNjg0NzQ2Nzc1fQ.hIyPFL8QVmTZxBEXm7hu9r1DYjfUlOYzQ9ygjjQc9g4
+//GET user TODO: add more security
 router.get(`/:username`, verify, (request, response) => {
+  // check if params.username is equal (verify)user.username 
   if (request.user.username === request.params.username) {
+
     User.find({ username: request.params.username }, { password: 0 }).then(
       (dbResponse) => {
         response.status(200).send({ user: dbResponse });
       }
     );
   } else {
-    response.status(404).send({ error: "unathoraized" });
+    response.status(404).send({ error: "UNAUTHORIZED" });
   }
 });
 
-//soft delete
-// TEST URL: http://localhost:8010/api/v1/user/removeuser
+// DELETE user - soft TODO: add more security
 // TEST URL - render: https://shop-soap-boulangerie-api.onrender.com/api/v1/user/removeuser
 /* TEST BODY:
     { 
@@ -115,5 +113,20 @@ router.post(`/removeuser`, (request, response) => {
     }
   });
 });
+
+//PUT user - update TODO: Add more security 1:00:00
+router.put("/:username", verifyTokenAndAuthorize, async (request, response) => {
+  if(request.body.password){
+
+  } else {
+
+  }
+
+  try {
+    
+  } catch (error) {
+
+  }
+})
 
 module.exports = router;
