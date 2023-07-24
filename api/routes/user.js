@@ -19,25 +19,35 @@ const { verify } = require("../middlewares/auth");
     }
     */
 router.post("/register", (request, response) => {
-  bcrypt.hash(request.body.password, 10).then((hash, err) => {
-    const newUser = new User({
-      username: request.body.username,
-      password: hash,
-      firstname: request.body.firstname,
-      lastname: request.body.lastname,
-      email: request.body.email,
-      isAdmin: request.body.isAdmin,
-      isActive: request.body.isActive,
+  // When data body is complete: username, password, firstname, lastname, email
+  if (request.body.username && request.body.password && request.body.firstname && request.body.lastname && request.body.email ){
+    
+    // hash password 10x
+    bcrypt.hash(request.body.password, 10).then((hash, err) => {
+      const newUser = new User({
+        username: request.body.username,
+        password: hash,
+        firstname: request.body.firstname,
+        lastname: request.body.lastname,
+        email: request.body.email,
+        isAdmin: request.body.isAdmin,
+        isActive: request.body.isActive,
+      });
+  
+      try {
+        newUser.save().then((data) => {
+          response.status(201).send({ message: "User Registration Successful" });
+        });
+      } catch (error) {
+        response.status(500).send({ errormessage: error });
+      }
     });
 
-    try {
-      newUser.save().then((data) => {
-        response.status(201).send({ message: "User Registration Successful" });
-      });
-    } catch (error) {
-      response.status(500).send({ errormessage: error });
-    }
-  });
+  } else {
+    // When data is incomplete
+    response.status(400).send({ errormessage: "Please complete data"});
+  }
+  
 });
 
 // login

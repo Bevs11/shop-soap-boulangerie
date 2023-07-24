@@ -2,8 +2,22 @@ const express = require('express');
 const router = express.Router();
 const Product = require('../models/ProductModel');
 
-    
-    // TEST URL: http://localhost:8010/api/v1/products/a004
+
+
+// get products
+// TEST URL: http://localhost:8000/api/v1/products/
+router.get(`/`, ( request, response ) => {
+    Product.find({"isActive": true}).then( dbResponse => {
+        if (!dbResponse){
+            response.status( 400 ).send({ error: "Product Not Found" });
+        }else{
+            response.status(200).send({ products: dbResponse });
+        }
+            
+    });
+});  
+
+// TEST URL: http://localhost:8000/api/v1/products/a004
 router.get(`/:productId`, ( request, response ) => {
     Product.findOne({"productId": request.params.productId}).then( dbResponse => {
         if (!dbResponse){
@@ -14,27 +28,17 @@ router.get(`/:productId`, ( request, response ) => {
     });
 });
 
-    // get products
-    // TEST URL: http://localhost:8010/api/v1/products/
-    router.get(`/`, ( request, response ) => {
-        Product.find({"isActive": true}).then( dbResponse => {
-            if (!dbResponse){
-                response.status( 400 ).send({ error: "Product Not Found" });
-            }else{
-                response.status(200).send({ product: dbResponse });
-            }
-            
-        });
-    });   
+ 
 
 
     // add product
-    // TEST URL: http://localhost:8010/api/v1/products/addproduct
+    // TEST URL: http://localhost:8000/api/v1/products/addproduct
     /* TEST BODY
     {
         "title": "banana soap", 
         "img": "http://www.banana.com/bananasoap",
         "description": "banana is a tasty fruit",
+        "categories": ["Facial Soap", "Body Soap"]
         "price": 56,
         "productId": "b007",
         "isActive": true
@@ -55,7 +59,7 @@ router.post(`/addproduct`, ( request, response ) => {
 });
 
     //soft delete
-    // TEST URL: http://localhost:8010/api/v1/products/removeproduct
+    // TEST URL: http://localhost:8000/api/v1/products/removeproduct
     /* TEST BODY:
     { 
         "productId": "b006"
@@ -74,7 +78,7 @@ router.post(`/removeproduct`, ( request, response ) => {
 });
 
     // edit
-    // TEST URL: http://localhost:8010/api/v1/products/edit
+    // TEST URL: http://localhost:8000/api/v1/products/edit
     /* TEST BODY:
     { 
         "productId": "b006",
