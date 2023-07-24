@@ -41,19 +41,16 @@ router.post("/register", (request, response) => {
 
 // POST login
 router.post("/login", (request, response) => {
-
   // find user using findOne 
   User.findOne({ username: request.body.username }).then((dbResponse) => {
     // if there is a username that exist
     if (dbResponse) {
-      // check in bcrypt.compare if password and hash is correct
+      // check using bcrypt.compare if password and hash is correct
       bcrypt
         .compare(request.body.password, dbResponse.password)
         .then((isValid) => {
-          if (!isValid) {
-            response.status(404).send({ error: "invalid password" });
-          } else {
-
+          // if password and hash is valid
+          if (isValid) {
             const accessToken = jwt.sign(
               {
                 username: dbResponse.username,
@@ -69,12 +66,15 @@ router.post("/login", (request, response) => {
               isAdmin: dbResponse.isAdmin,
               token: accessToken,
             });
+          } else {
+            // if password and hash is not valid send error message
+            response.status(401).send({ error: "PASSWORD INCORRECT" });
           }
         });
       
     } else {
       //if no such username exist return error message
-      return response.status(404).send({ error: "user does not exist" });
+      return response.status(404).send({ error: "USER NOT FOUND" });
     }
   });
 });
