@@ -101,6 +101,7 @@ router.get(`/:username`, verify, (request, response) => {
 
 // DELETE(post) user
 router.post(`/removeuser/:username`, verifyTokenAndAuthorize, (request, response) => {
+  // finds user and change isActive to false
   User.findOneAndUpdate(
     { username: request.params.username },
     { $set: { isActive: false } }
@@ -108,8 +109,7 @@ router.post(`/removeuser/:username`, verifyTokenAndAuthorize, (request, response
     if (!dbResponse) {
       return response.status(404).send({ error: "User Does Not Exist" });
     } else {
-      
-      response.status(200).send({ user: {...others} });
+      response.status(200).send({ message: "User has been DELETED" });
     }
   });
 });
