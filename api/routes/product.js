@@ -4,18 +4,27 @@ const Product = require('../models/ProductModel');
 
 // GET products - active, nonactive, all, facialsoaps, bodysoaps, fragrantsoaps
 router.get(`/get/:status`, ( request, response ) => {
-    const errorResponse = () => {
-        response.status( 400 ).send({ error: "Products Not Found" });
-    }
-
+    
     if(request.params.status === "active") {
         Product.find({"isActive": true}).then( dbResponse => {
-            if (!dbResponse){
-                errorResponse();
-            }else{
-                response.status(200).send({ products: dbResponse });
-            }  
+            response.status(200).send({ products: dbResponse });
+        }).catch(() => {
+            response.status(503).send({ errorMessage: "service unavailable" });
         });
+    } else if (request.params.status === "nonactive") {
+        Product.find({"isActive": false}).then( dbResponse => {            
+            response.status(200).send({ products: dbResponse });           
+        }).catch(() => {
+            response.status(503).send({ errorMessage: "service unavailable" });
+        });
+    } else if (request.params.status === "all") {
+        Product.find().then( dbResponse => {            
+            response.status(200).send({ products: dbResponse });           
+        }).catch(() => {
+            response.status(503).send({ errorMessage: "service unavailable" });
+        });
+    } else {
+        response.status( 400 ).send({ error: "Products Not Found" });
     }
     
 });  
