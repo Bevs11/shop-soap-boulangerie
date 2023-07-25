@@ -2,8 +2,6 @@ const express = require('express');
 const router = express.Router();
 const Product = require('../models/ProductModel');
 
-
-
 // get products
 // TEST URL: http://localhost:8000/api/v1/products/
 router.get(`/`, ( request, response ) => {

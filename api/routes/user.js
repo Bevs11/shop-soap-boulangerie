@@ -82,7 +82,7 @@ router.post("/login", (request, response) => {
 });
 
 //GET one user
-router.get(`/:username`, verify, (request, response) => {
+router.get(`/getuser/:username`, verify, (request, response) => {
   // check if params.username is equal (verify)user.username 
   if (request.user.username === request.params.username) {
 
@@ -114,18 +114,32 @@ router.post(`/removeuser/:username`, verifyTokenAndAuthorize, (request, response
   });
 });
 
-//PUT(post) user - update TODO: Add more security 1:00:00
-router.post(`/removeuser/:username`, verifyTokenAndAuthorize, (request, response) => {
+//PUT update user - update TODO: Add more security 1:00:00
+router.put(`/updateuser/:username`, verifyTokenAndAuthorize, (request, response) => {
+  // find and update user
   User.findOneAndUpdate(
     { username: request.params.username },
-    { $set: { isActive: false } }
+    { $set: request.body  }
   ).then((dbResponse) => {
     if (!dbResponse) {
       return response.status(404).send({ error: "User Does Not Exist" });
     } else {
-      response.status(200).send({ user: dbResponse });
+      const {password, ...others} = dbResponse._doc
+      response.status(200).send({ message: "User has been Updated", user: {...others} });
     }
   });
 });
+
+// GET all users
+router.get(`/allusers`, verifyTokenAndAdmin, (request, response) =>{
+  User.find().then((dbResponse) => {
+    if (dbResponse){
+      const [{password, ...others}] = dbResponse._doc
+      response.status(200).send({  users: {...others} });
+    } else {
+      response.status(404).send({ error: "User Does Not Exist" });
+    }
+  })
+})
 
 module.exports = router;

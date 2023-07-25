@@ -16,7 +16,7 @@ const verify = ( request, response, next ) => {
             next();
         })
     } else {
-        response.status( 401 ).send({ error: 'UNAUTHORIZED' });
+        response.status( 401 ).send({ error: 'No token input' });
     }
 
 }
