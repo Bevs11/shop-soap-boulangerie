@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Product = require('../models/ProductModel');
+const { verifyToken, verifyTokenAndAuthorize, verifyTokenAndAdmin } = require("../middlewares/auth");
 
 // GET products - active, nonactive, all, facialsoaps, bodysoaps, fragrantsoaps
 router.get(`/get/:status`, ( request, response ) => {
@@ -25,17 +26,16 @@ router.get(`/get/:status`, ( request, response ) => {
         });
     } else {
         response.status( 400 ).send({ error: "Products Not Found" });
-    }
-    
+    }  
 });  
 
 // GET one product 
-router.get(`/:productId`, ( request, response ) => {
+router.get(`/id/:productId`, ( request, response ) => {
     Product.findOne({"productId": request.params.productId}).then( dbResponse => {
-        if (!dbResponse){
-            response.status( 400 ).send({ error: "Product Not Found" });
+        if (dbResponse){
+            response.status(200).send({ product: dbResponse });            
         }else{
-            response.status(200).send({ product: dbResponse });
+            response.status( 400 ).send({ error: "Product Not Found" });
         }     
     });
 });
@@ -43,30 +43,23 @@ router.get(`/:productId`, ( request, response ) => {
  
 
 
-    // add product
-    // TEST URL: http://localhost:8000/api/v1/products/addproduct
-    /* TEST BODY
-    {
-        "title": "banana soap", 
-        "img": "http://www.banana.com/bananasoap",
-        "description": "banana is a tasty fruit",
-        "categories": ["Facial Soap", "Body Soap"]
-        "price": 56,
-        "productId": "b007",
-        "isActive": true
-}
-    */
-router.post(`/addproduct`, ( request, response ) => {
+//POST add product
+router.post(`/addproduct`, verifyTokenAndAdmin, ( request, response ) => {
     const newProduct = new Product({ 
         title: request.body.title, 
         img: request.body.img,
         description: request.body.description,
         price: request.body.price,
         productId: request.body.productId,
-        isActive: request.body.isActive
+        isActive: request.body.isActive,
+        categories: request.body.categories
     });
+
+
     newProduct.save().then(data => {
-        response.status( 201 ).send({ message: "Product Added" });
+        response.status( 201 ).send({ product: data });
+    }).catch((error)=>{
+        response.status( 400 ).send({ errorMessage: error });
     })
 });
 
