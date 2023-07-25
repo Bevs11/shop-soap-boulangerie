@@ -141,7 +141,7 @@ router.get(`/get/allusers`, verifyTokenAndAdmin, (request, response) =>{
       // const [{password, ...others}] = dbResponse._doc
       response.status(200).send({  users: newResponse });
     } else {
-      response.status(404).send({ error: "User Does Not Exist" });
+      response.status(404).send({ error: "ERROR" });
     }
   })
 })

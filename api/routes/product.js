@@ -2,20 +2,25 @@ const express = require('express');
 const router = express.Router();
 const Product = require('../models/ProductModel');
 
-// get products
-// TEST URL: http://localhost:8000/api/v1/products/
-router.get(`/`, ( request, response ) => {
-    Product.find({"isActive": true}).then( dbResponse => {
-        if (!dbResponse){
-            response.status( 400 ).send({ error: "Product Not Found" });
-        }else{
-            response.status(200).send({ products: dbResponse });
-        }
-            
-    });
+// GET products - active, nonactive, all, facialsoaps, bodysoaps, fragrantsoaps
+router.get(`/get/:status`, ( request, response ) => {
+    const errorResponse = () => {
+        response.status( 400 ).send({ error: "Products Not Found" });
+    }
+
+    if(request.params.status === "active") {
+        Product.find({"isActive": true}).then( dbResponse => {
+            if (!dbResponse){
+                errorResponse();
+            }else{
+                response.status(200).send({ products: dbResponse });
+            }  
+        });
+    }
+    
 });  
 
-// TEST URL: http://localhost:8000/api/v1/products/a004
+// GET one product 
 router.get(`/:productId`, ( request, response ) => {
     Product.findOne({"productId": request.params.productId}).then( dbResponse => {
         if (!dbResponse){
