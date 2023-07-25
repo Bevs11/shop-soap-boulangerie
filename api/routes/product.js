@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Product = require('../models/ProductModel');
-const { verifyToken, verifyTokenAndAuthorize, verifyTokenAndAdmin } = require("../middlewares/auth");
+const { verifyTokenAndAdmin } = require("../middlewares/auth");
 
 // GET products - active, nonactive, all, facialsoaps, bodysoaps, fragrantsoaps
 router.get(`/get/:status`, ( request, response ) => {
@@ -102,6 +102,5 @@ router.put("/editproduct/:id", verifyTokenAndAdmin, (request, response) => {
         response.status( 400 ).send({ errorMessage: error });
     })
 })
-
 
 module.exports = router;
