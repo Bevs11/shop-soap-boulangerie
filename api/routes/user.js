@@ -2,7 +2,7 @@ const router = require("express").Router();
 const User = require("../models/UserModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { verify, verifyTokenAndAuthorize, verifyTokenAndAdmin } = require("../middlewares/auth");
+const { verifyToken, verifyTokenAndAuthorize, verifyTokenAndAdmin } = require("../middlewares/auth");
 
 // POST registration
 router.post("/register", (request, response) => {
@@ -82,7 +82,7 @@ router.post("/login", (request, response) => {
 });
 
 //GET one user
-router.get(`/getuser/:username`, verify, (request, response) => {
+router.get(`/getuser/:username`, verifyToken, (request, response) => {
   // check if params.username is equal (verify)user.username 
   if (request.user.username === request.params.username) {
 
@@ -130,12 +130,16 @@ router.put(`/updateuser/:username`, verifyTokenAndAuthorize, (request, response)
   });
 });
 
-// GET all users
-router.get(`/allusers`, verifyTokenAndAdmin, (request, response) =>{
+// GET all users without password
+router.get(`/get/allusers`, verifyTokenAndAdmin, (request, response) =>{
   User.find().then((dbResponse) => {
     if (dbResponse){
-      const [{password, ...others}] = dbResponse._doc
-      response.status(200).send({  users: {...others} });
+      const newResponse = dbResponse.map((user) => {
+        const {password, ...others} = user._doc
+        return others
+      })
+      // const [{password, ...others}] = dbResponse._doc
+      response.status(200).send({  users: newResponse });
     } else {
       response.status(404).send({ error: "User Does Not Exist" });
     }

@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 // Get token
-const verify = ( request, response, next ) => {
+const verifyToken = ( request, response, next ) => {
     const authHeaders = request.headers.authorization;
     if (authHeaders){
         const token = authHeaders.split(' ')[1];
@@ -23,7 +23,7 @@ const verify = ( request, response, next ) => {
 
 // check token if valid token for user or isAdmin true
 const verifyTokenAndAuthorize = (request, response, next) =>{
-    verify(request, response, () =>{
+    verifyToken(request, response, () =>{
         if(request.user.username === request.params.username || request.user.isAdmin){
             next();
         } else {
@@ -34,7 +34,7 @@ const verifyTokenAndAuthorize = (request, response, next) =>{
 
 // check if admin
 const verifyTokenAndAdmin = (request, response, next) => {
-    verify(request, response, () => {
+    verifyToken(request, response, () => {
         if (request.user.isAdmin) {
             next();
         } else {
@@ -43,5 +43,5 @@ const verifyTokenAndAdmin = (request, response, next) => {
     })
 }
 
-module.exports = { verify, verifyTokenAndAuthorize, verifyTokenAndAdmin };
+module.exports = { verifyToken, verifyTokenAndAuthorize, verifyTokenAndAdmin };
 
