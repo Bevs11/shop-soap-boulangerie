@@ -1,23 +1,21 @@
 const express = require('express');
 const router = express.Router();
 const Email = require('../models/EmailModel');
+const { verifyTokenAndAdmin } = require("../middlewares/auth");
 
-// get all email
-// TEST URL: http://localhost:8010/api/v1/emails/
-router.get(`/`, ( request, response ) => {
+// GET all emails
+router.get(`/`, verifyTokenAndAdmin, ( request, response ) => {
     Email.find().then( dbResponse => {
         if (!dbResponse){
             response.status( 400 ).send({ error: "Email List Not Found" });
         }else{
-            response.status(200).send({ email: dbResponse });
+            const newList = dbResponse.map((item)=> item.email)
+            response.status(200).send({ emailList: newList });
         }     
     });
 });
 
-
-// submit email
-// TEST URL: http://localhost:8010/api/v1/emails/addemail
-// {email : <email>}
+// POST email
 router.post(`/addemail`, ( request, response ) => {
     const newEmail = new Email({ 
         email: request.body.email
@@ -26,9 +24,5 @@ router.post(`/addemail`, ( request, response ) => {
         response.status( 201 ).send({ message: "Email Added" });
     })
 });
-
-
-
-
 
 module.exports = router;
