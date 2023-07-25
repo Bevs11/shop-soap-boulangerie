@@ -2,7 +2,7 @@ const router = require("express").Router();
 const User = require("../models/UserModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { verify, verifyTokenAndAuthorize } = require("../middlewares/auth");
+const { verify, verifyTokenAndAuthorize, verifyTokenAndAdmin } = require("../middlewares/auth");
 
 // POST registration
 router.post("/register", (request, response) => {
@@ -25,7 +25,8 @@ router.post("/register", (request, response) => {
       // promise save newUser to DB and catch if error
       try {
         newUser.save().then((data) => {
-          response.status(201).send({ message: "User Registration SUCCESSFUL" });
+          const{ password, ...others} = data._doc // removes password from response
+          response.status(201).send({ message: "Registration SUCCESSFUL", user: {...others} });
         });
       } catch (error) {
         response.status(500).send({ errormessage: error });
@@ -51,6 +52,7 @@ router.post("/login", (request, response) => {
         .then((isValid) => {
           // if password and hash is valid
           if (isValid) {
+   
             const accessToken = jwt.sign(
               {
                 username: dbResponse.username,
@@ -79,54 +81,51 @@ router.post("/login", (request, response) => {
   });
 });
 
-//GET user TODO: add more security
+//GET one user
 router.get(`/:username`, verify, (request, response) => {
   // check if params.username is equal (verify)user.username 
   if (request.user.username === request.params.username) {
 
-    User.find({ username: request.params.username }, { password: 0 }).then(
+    // finds one user and removes password from response
+    User.findOne({ username: request.params.username }, { password: 0 }).then(
       (dbResponse) => {
         response.status(200).send({ user: dbResponse });
       }
     );
+
   } else {
+    // if token is not valid, user is not authorized
     response.status(404).send({ error: "UNAUTHORIZED" });
   }
 });
 
-// DELETE user - soft TODO: add more security
-// TEST URL - render: https://shop-soap-boulangerie-api.onrender.com/api/v1/user/removeuser
-/* TEST BODY:
-    { 
-        "username": "no3"
-    }
-    */
-router.post(`/removeuser`, (request, response) => {
-  User.updateOne(
-    { username: request.body.username },
+// DELETE(post) user
+router.post(`/removeuser/:username`, verifyTokenAndAuthorize, (request, response) => {
+  User.findOneAndUpdate(
+    { username: request.params.username },
     { $set: { isActive: false } }
   ).then((dbResponse) => {
     if (!dbResponse) {
-      return response.status(404).send({ error: "product does not exist" });
+      return response.status(404).send({ error: "User Does Not Exist" });
     } else {
-      response.status(200).send({ message: "User is deleted" });
+      
+      response.status(200).send({ user: {...others} });
     }
   });
 });
 
-//PUT user - update TODO: Add more security 1:00:00
-router.put("/:username", verifyTokenAndAuthorize, async (request, response) => {
-  if(request.body.password){
-
-  } else {
-
-  }
-
-  try {
-    
-  } catch (error) {
-
-  }
-})
+//PUT(post) user - update TODO: Add more security 1:00:00
+router.post(`/removeuser/:username`, verifyTokenAndAuthorize, (request, response) => {
+  User.findOneAndUpdate(
+    { username: request.params.username },
+    { $set: { isActive: false } }
+  ).then((dbResponse) => {
+    if (!dbResponse) {
+      return response.status(404).send({ error: "User Does Not Exist" });
+    } else {
+      response.status(200).send({ user: dbResponse });
+    }
+  });
+});
 
 module.exports = router;
