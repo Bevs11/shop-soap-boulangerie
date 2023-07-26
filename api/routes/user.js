@@ -1,118 +1,149 @@
-const express = require('express');
-const router = express.Router();
-const User = require('../models/UserModel');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const { verify } = require('../middlewares/auth');
+const router = require("express").Router();
+const User = require("../models/UserModel");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const { verifyToken, verifyTokenAndAuthorize, verifyTokenAndAdmin } = require("../middlewares/auth");
 
+// POST registration
+router.post("/register", (request, response) => {
+  
+  // When data body is complete: username, password, firstname, lastname, email
+  if (request.body.username && request.body.password && request.body.firstname && request.body.lastname && request.body.email ){
 
-    // Registration
-    // TEST URL: http://localhost:8010/api/v1/user/register
-    /*
-    {
-        "username": "no3",
-        "password": "password",
-        "firstname": "bronya",
-        "lastname": "rand",
-        "email": "hai",
-        "isAdmin": true
-    }
-    */
-    router.post("/register", (request, response) => {
-    
-        bcrypt.hash( request.body.password, 10 ).then((hash, err) => {
-    
-            const newUser = new User({
-                "username": request.body.username,
-                "password": hash,
-                "firstname": request.body.firstname,
-                "lastname": request.body.lastname,
-                "email": request.body.email,
-                "isAdmin": request.body.isAdmin,
-                "status": request.body.password,
-            });
-    
-            try {
-                newUser.save().then(data => {
-                    response.status( 201 ).send({ message: "User Registration Successful" })
-                })
-            } catch (error) {
-                response.status(500).send({errormessage: error});
-            };
-    
-    
-        })
-        
-        
-    })
-        // login
-        // TODO: change status to correct one
-         // TEST URL: http://localhost:8010/api/v1/user/login  
-         //{"username": "no5", "password": "password"}
-    router.post("/login", (request, response) => {
-        User.findOne({ username: request.body.username })
-        .then( dbResponse => {
-            if (!dbResponse) {
-                return response.status(404).send({error: "user does not exist"})
-            } else {
-                bcrypt.compare( request.body.password, dbResponse.password ).then( isValid => {
-                    if(!isValid) {
-                        response.status(404).send({error: "invalid password"}) 
-                    } else {
-                        // console.log(process.env.SEC_KEY);
-                        const accessToken = jwt.sign({
-                            username: dbResponse.username, 
-                            id:dbResponse._id, 
-                            isAdmin: dbResponse.isAdmin}, 
-                            process.env.SEC_KEY);
-
-                        response.status(200).send({
-                            username: dbResponse.username, 
-                            id: dbResponse._id, 
-                            isAdmin: dbResponse.isAdmin, 
-                            token: accessToken 
-                            }) 
-    
-                    }
-                })
-            }
-        })
-    
-    
-    })
-
-        //get user
-    // TEST URL: http://localhost:8010/api/v1/user/rockstar
-    // Authorization : Bearers eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvY2tzdGFyIiwiaWQiOiI2NDY2NGI1OTMyOWNkOWIwMTc1ZjU0YjQiLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNjg0NzQ2Nzc1fQ.hIyPFL8QVmTZxBEXm7hu9r1DYjfUlOYzQ9ygjjQc9g4
-router.get(`/:username`, verify, ( request, response ) => {
-    if (request.user.username === request.params.username){
-        User.find({"username": request.params.username}, {"password": 0}).then( dbResponse => {
-            response.status(200).send({ user: dbResponse });
+    // hash password 10x
+    bcrypt.hash(request.body.password, 10).then((hash, err) => {
+      const newUser = new User({
+        username: request.body.username,
+        password: hash,
+        firstname: request.body.firstname,
+        lastname: request.body.lastname,
+        email: request.body.email,
+        isAdmin: request.body.isAdmin,
+        isActive: request.body.isActive,
+      });
+      
+      // promise save newUser to DB and catch if error
+      try {
+        newUser.save().then((data) => {
+          const{ password, ...others} = data._doc // removes password from response
+          response.status(201).send({ message: "Registration SUCCESSFUL", user: {...others} });
         });
+      } catch (error) {
+        response.status(500).send({ errormessage: error });
+      }
+    });
+
+  } else {
+    // When data is incomplete
+    response.status(400).send({ errormessage: "ERROR! Please complete data"});
+  }
+  
+});
+
+// POST login
+router.post("/login", (request, response) => {
+  // find user using findOne 
+  User.findOne({ username: request.body.username }).then((dbResponse) => {
+    // if there is a username that exist
+    if (dbResponse) {
+      // check using bcrypt.compare if password and hash is correct
+      bcrypt
+        .compare(request.body.password, dbResponse.password)
+        .then((isValid) => {
+          // if password and hash is valid
+          if (isValid) {
+   
+            const accessToken = jwt.sign(
+              {
+                username: dbResponse.username,
+                id: dbResponse._id,
+                isAdmin: dbResponse.isAdmin,
+              },
+              process.env.SEC_KEY, {expiresIn: "3d"}
+            );
+            
+            response.status(200).send({
+              username: dbResponse.username,
+              id: dbResponse._id,
+              isAdmin: dbResponse.isAdmin,
+              token: accessToken
+            });
+          } else {
+            // if password and hash is not valid send error message
+            response.status(401).send({ error: "PASSWORD INCORRECT" });
+          }
+        });
+      
     } else {
-        response.status(404).send({error: "unathoraized"})
+      //if no such username exist return error message
+      return response.status(404).send({ error: "USER NOT FOUND" });
     }
-    
-    
+  });
 });
 
-//soft delete
-    // TEST URL: http://localhost:8010/api/v1/user/removeuser
-    /* TEST BODY:
-    { 
-        "username": "no3"
-    }
-    */
-router.post(`/removeuser`, ( request, response ) => {
-    User.updateOne({ username: request.body.username }, {$set:{isActive : false}})
-    .then( dbResponse => {
-        if (!dbResponse) {
-            return response.status(404).send({error: "product does not exist"})
-        } else {
-            response.status(200).send({message: "User is deleted"})
-        }
-    })
+//GET one user
+router.get(`/getuser/:username`, verifyToken, (request, response) => {
+  // check if params.username is equal (verify)user.username 
+  if (request.user.username === request.params.username) {
+
+    // finds one user and removes password from response
+    User.findOne({ username: request.params.username }, { password: 0 }).then(
+      (dbResponse) => {
+        response.status(200).send({ user: dbResponse });
+      }
+    );
+
+  } else {
+    // if token is not valid, user is not authorized
+    response.status(404).send({ error: "UNAUTHORIZED" });
+  }
 });
 
+// DELETE(post) user
+router.post(`/removeuser/:username`, verifyTokenAndAuthorize, (request, response) => {
+  // finds user and change isActive to false
+  User.findOneAndUpdate(
+    { username: request.params.username },
+    { $set: { isActive: false } }
+  ).then((dbResponse) => {
+    if (!dbResponse) {
+      return response.status(404).send({ error: "User Does Not Exist" });
+    } else {
+      response.status(200).send({ message: "User has been DELETED" });
+    }
+  });
+});
+
+//PUT update user - update TODO: Add more security 1:00:00
+router.put(`/updateuser/:username`, verifyTokenAndAuthorize, (request, response) => {
+  // find and update user
+  User.findOneAndUpdate(
+    { username: request.params.username },
+    { $set: request.body  }
+  ).then((dbResponse) => {
+    if (!dbResponse) {
+      return response.status(404).send({ error: "User Does Not Exist" });
+    } else {
+      const {password, ...others} = dbResponse._doc
+      response.status(200).send({ message: "User has been Updated", user: {...others} });
+    }
+  });
+});
+
+// GET all users without password
+router.get(`/get/allusers`, verifyTokenAndAdmin, (request, response) =>{
+  User.find().then((dbResponse) => {
+    if (dbResponse){
+      const newResponse = dbResponse.map((user) => {
+        const {password, ...others} = user._doc
+        return others
+      })
+      // const [{password, ...others}] = dbResponse._doc
+      response.status(200).send({  users: newResponse });
+    } else {
+      response.status(404).send({ error: "ERROR" });
+    }
+  })
+})
 
 module.exports = router;
