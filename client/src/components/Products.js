@@ -17,7 +17,7 @@ const Products = () => {
 
   const getSoapData = async () => {
     try{
-      const response = await axios.get("http://localhost:8000/api/v1/products/get/active");
+      const response = await axios.get("https://shop-soap-boulangerie-api.onrender.com/api/v1/products/get/active");
       if (response) {
         settingSoapsData(response.data.products)
       }
