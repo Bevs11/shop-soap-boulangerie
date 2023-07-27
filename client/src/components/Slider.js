@@ -69,6 +69,7 @@ padding: 10px;
 font-size: 20px;
 font-weight: bold;
 background-color: pink;
+border-radius: 5px;
 cursor: pointer;
 `;
 
