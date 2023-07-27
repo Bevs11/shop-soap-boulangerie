@@ -2,8 +2,7 @@ import styled from "styled-components";
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import { sliderItems } from "../data";
-import { Link } from 'react-router-dom';
-
+import { useNavigate } from 'react-router-dom';
 import {useState} from 'react';
 
 const Container = styled.div`
@@ -12,6 +11,7 @@ height: 100vh;
 display: flex;
 position: relative;
 overflow: hidden;
+margin-top: 20px;
 `;
 const Arrow = styled.div`
 width: 50px;
@@ -72,8 +72,13 @@ background-color: pink;
 cursor: pointer;
 `;
 
-    // Component for Home page that displays highlights
+
+
+// Component for Home page that displays highlights
 const Slider = () => {
+
+    const navigate = useNavigate();
+
     const [slideIndex, setSlideIndex] = useState(0);
     
         //Used to check direction of slider arrow
@@ -99,8 +104,8 @@ const Slider = () => {
                 <InfoContainer>
                     <Title>{item.title}</Title>
                     <Desc>{item.desc}</Desc>
-                    <Button>
-                        <Link to='/products'>SHOP NOW</Link>   
+                    <Button onClick={() => navigate("/products")}>
+                        SHOP NOW 
                     </Button>
                 </InfoContainer>
             </Slide>

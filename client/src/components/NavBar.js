@@ -6,7 +6,7 @@ import { ShopContext } from "../context/ShopContextProvider";
 
 
 const Container = styled.div`
-    margin: 20px 0;
+    margin-bottom: 0;
     background-color: rgb(250,230,230);
 `;
 const Wrapper = styled.div`
