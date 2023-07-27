@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Container = styled.div`
 flex:1;
@@ -33,17 +33,22 @@ padding: 20px;
 border-radius: 5px;
 cursor: pointer;
 font-weight: bold;
+
+&:hover {
+  transform: scale(1.2);
+  box-shadow: 2px 2px 5px grey;}
 `;
 
   //Component for Categories
 const CategoryItem = ({item}) => {
+  const navigate = useNavigate();
   return (
     <Container>
         <Image src={item.img}/>
         <Info>
             <Title>{item.title}</Title>
-            <Button>
-            <Link to='/products'>SHOP NOW</Link>
+            <Button onClick={() => navigate("/products")}>
+              SHOP NOW
             </Button>
         </Info>
     </Container>
