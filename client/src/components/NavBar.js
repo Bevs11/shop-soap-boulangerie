@@ -30,6 +30,11 @@ justify-content: flex-end;
 padding-right: 25px; 
 flex: 1;
 `;
+const NavigationContainer = styled.div`
+&:hover {
+    transform: scale(1.2);
+}
+`;
 const NavigationItem = styled.button`
 all: unset;
 cursor: pointer;
@@ -44,6 +49,11 @@ background-color: yellow;
 display: flex;
 justify-content: center;
 align-items: center;
+
+&:hover {
+    transform: scale(1.2);
+
+}
 `;
 const Logo = styled.img`
 width: 90%;
@@ -60,22 +70,40 @@ const NavBar = () => {
         <Wrapper>
             <Left>
                 <LogoContainer>
-                    <Logo src={image}/>
+                    <a onClick={() => navigate("/")}><Logo src={image}/></a>
                 </LogoContainer>
             </Left>
             <Center>SOAP BOULANGERIE</Center>
             <Right>
-                <NavigationItem onClick={() => navigate("/")}>
-                    Home
-                </NavigationItem>
-                <NavigationItem onClick={() => navigate("/products")}>Products
-                </NavigationItem>                                    
-                {!isLoggedIn && <NavigationItem onClick={() => navigate("/login")}>Login</NavigationItem>}
-                {isUserAdmin && <NavigationItem onClick={() => navigate("/dashboard")}></NavigationItem>}                                     
-                <NavigationItem onClick={() => navigate("/cart")}>
-                    Cart/Checkout
-                </NavigationItem>              
-                {isLoggedIn && <NavigationItem onClick={() => navigate("/logout")}>Logout</NavigationItem>}                                
+                <NavigationContainer>
+                    <NavigationItem onClick={() => navigate("/")}>
+                        Home
+                    </NavigationItem>
+                </NavigationContainer>
+                <NavigationContainer>
+                    <NavigationItem onClick={() => navigate("/products")}>Products
+                    </NavigationItem> 
+                </NavigationContainer>                                                    
+                {!isLoggedIn && 
+                <NavigationContainer>
+                    <NavigationItem onClick={() => navigate("/login")}>Login</NavigationItem>
+                </NavigationContainer>
+                }
+                {isUserAdmin && 
+                <NavigationContainer>
+                    <NavigationItem onClick={() => navigate("/dashboard")}></NavigationItem>
+                </NavigationContainer>
+                }                                     
+                <NavigationContainer>
+                    <NavigationItem onClick={() => navigate("/cart")}>
+                        Cart/Checkout
+                    </NavigationItem>
+                </NavigationContainer>          
+                {isLoggedIn && 
+                <NavigationContainer>
+                    <NavigationItem onClick={() => navigate("/logout")}>Logout</NavigationItem>
+                </NavigationContainer>
+                }                                
             </Right>
         </Wrapper>
     </Container>

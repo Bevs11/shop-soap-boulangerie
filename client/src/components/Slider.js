@@ -31,6 +31,10 @@ margin: auto;
 cursor: pointer;
 opacity: 0.5;
 z-index: 2;
+
+&:hover {
+    transform: scale(1.2);
+    box-shadow: 2px 2px 5px grey;}
 `;
 const Wrapper = styled.div`
 height: 100%;
@@ -71,6 +75,10 @@ font-weight: bold;
 background-color: pink;
 border-radius: 5px;
 cursor: pointer;
+
+&:hover {
+    transform: scale(1.2);
+    box-shadow: 2px 2px 5px grey;}
 `;
 
 
