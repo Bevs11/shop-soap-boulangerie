@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import React, { useState, useContext, useEffect } from 'react';
 import styled from 'styled-components';
 import image from '../assets/pink-soap.png';
@@ -30,7 +30,13 @@ justify-content: flex-end;
 padding-right: 25px; 
 flex: 1;
 `;
-const NavigationItem = styled.div`
+const NavigationContainer = styled.div`
+&:hover {
+    transform: scale(1.2);
+}
+`;
+const NavigationItem = styled.button`
+all: unset;
 cursor: pointer;
 font-size: 14px;
 margin-left: 25px
@@ -43,6 +49,11 @@ background-color: yellow;
 display: flex;
 justify-content: center;
 align-items: center;
+
+&:hover {
+    transform: scale(1.2);
+
+}
 `;
 const Logo = styled.img`
 width: 90%;
@@ -52,36 +63,47 @@ height: 90%;
     //Component for header containing name, logo and links
 const NavBar = () => {
     const { userInformation, isLoggedIn, setIsLoggedIn, setUserInformation, isUserAdmin, setIsUserAdmin} = useContext(ShopContext);
+    const navigate = useNavigate();
 
   return (
     <Container>
         <Wrapper>
             <Left>
                 <LogoContainer>
-                    <Logo src={image}/>
+                    <a onClick={() => navigate("/")}><Logo src={image}/></a>
                 </LogoContainer>
             </Left>
             <Center>SOAP BOULANGERIE</Center>
             <Right>
-                <NavigationItem>
-                    <Link to='/'>Home</Link>
-                </NavigationItem>
-                <NavigationItem>
-                    <Link to='/products'>Products</Link>
-                </NavigationItem>
-                <NavigationItem>
-                    
-                        {!isLoggedIn && <Link to='/login'>Login</Link>}
-                        {isUserAdmin && <Link to='/dashboard'></Link>}
-                     
-                </NavigationItem>
-                <NavigationItem>
-                    <Link to='/cart'>Cart/Checkout</Link>
-                </NavigationItem>
-                <NavigationItem>
-                    {isLoggedIn && <Link to='/logout'>Logout</Link>}
-                    
-                </NavigationItem>
+                <NavigationContainer>
+                    <NavigationItem onClick={() => navigate("/")}>
+                        Home
+                    </NavigationItem>
+                </NavigationContainer>
+                <NavigationContainer>
+                    <NavigationItem onClick={() => navigate("/products")}>Products
+                    </NavigationItem> 
+                </NavigationContainer>                                                    
+                {!isLoggedIn && 
+                <NavigationContainer>
+                    <NavigationItem onClick={() => navigate("/login")}>Login</NavigationItem>
+                </NavigationContainer>
+                }
+                {isUserAdmin && 
+                <NavigationContainer>
+                    <NavigationItem onClick={() => navigate("/dashboard")}></NavigationItem>
+                </NavigationContainer>
+                }                                     
+                <NavigationContainer>
+                    <NavigationItem onClick={() => navigate("/cart")}>
+                        Cart/Checkout
+                    </NavigationItem>
+                </NavigationContainer>          
+                {isLoggedIn && 
+                <NavigationContainer>
+                    <NavigationItem onClick={() => navigate("/logout")}>Logout</NavigationItem>
+                </NavigationContainer>
+                }                                
             </Right>
         </Wrapper>
     </Container>

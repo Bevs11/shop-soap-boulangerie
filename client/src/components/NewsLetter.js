@@ -36,6 +36,7 @@ const Button = styled.button`
 flex:1;
 border: none;
 background-color: pink;
+cursor: pointer;
 
 &:hover{
   transform: scale(1.2);

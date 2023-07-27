@@ -1,6 +1,6 @@
 import { Facebook, Instagram, Twitter, Home, Phone, Email } from "@mui/icons-material";
 import styled from "styled-components";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 
 const Logo = styled.h1``;
@@ -45,6 +45,13 @@ list-style:none;
 const ListItem = styled.li`
 margin-bottom: 10px;
 `;
+const Links = styled.button`
+all: unset;
+cursor: pointer;
+
+&:hover {
+    transform: scale(1.2);}
+`;
 const Right = styled.div`
 flex:1;
 padding: 20px;
@@ -61,6 +68,7 @@ height: 20px;
 
     //Contains all footer items
 const Footer = () => {
+    const navigate = useNavigate();
   return (
     <Container>
 <Left>
@@ -84,16 +92,16 @@ const Footer = () => {
     </Title>
     <List>
         <ListItem>
-            <Link to='/'>Home</Link>
+            <Links onClick={() => navigate("/")}>Home</Links>
         </ListItem>
         <ListItem>
-            <Link to='/products'>Assorted Soaps</Link>
+            <Links onClick={() => navigate("/products")}>Assorted Soaps</Links>
         </ListItem>
         <ListItem>
-        <Link to='/products'>Fragrant Soaps</Link>
+            <Links onClick={() => navigate("/products")}>Fragrant Soaps</Links>
         </ListItem>
         <ListItem>
-        <Link to='/products'>Facial Soaps</Link>
+            <Links onClick={() => navigate("/products")}>Facial Soaps</Links>
         </ListItem>
     </List>
 </Center>
