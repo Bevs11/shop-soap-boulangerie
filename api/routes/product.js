@@ -11,8 +11,8 @@ router.get(`/get/:status`, ( request, response ) => {
             if (dbResponse){
                 response.status(200).send({ products: dbResponse });
             }
-        }).catch(() => {
-            response.status(503).send({ errorMessage: "service unavailable" });
+        }).catch((error) => {
+            response.status(503).send({ message: "cannot retrieve active products", error: error });
         });
     } else if (request.params.status === "nonactive") {
     // to get all non active products
@@ -20,8 +20,8 @@ router.get(`/get/:status`, ( request, response ) => {
             if (dbResponse) {          
                 response.status(200).send({ products: dbResponse });  
             }         
-        }).catch(() => {
-            response.status(503).send({ errorMessage: "service unavailable" });
+        }).catch((error) => {
+            response.status(503).send({ message: "cannot retrieve inactive products", error: error });
         });
     } else if (request.params.status === "all") {
     //to get all products in database
@@ -30,7 +30,7 @@ router.get(`/get/:status`, ( request, response ) => {
                 response.status(200).send({ products: dbResponse });  
             }         
         }).catch(() => {
-            response.status(503).send({ errorMessage: "service unavailable" });
+            response.status(503).send({ errorMessage: "cannot retrieve ALL products" });
         });
     } else {
     // if query is not in the options

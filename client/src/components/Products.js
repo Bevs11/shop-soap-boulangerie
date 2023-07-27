@@ -17,9 +17,9 @@ const Products = () => {
 
   const getSoapData = async () => {
     try{
-      const response = await axios.get("http://localhost:8010/api/v1/products/");
+      const response = await axios.get("http://localhost:8000/api/v1/products/get/active");
       if (response) {
-        settingSoapsData(response.data.product)
+        settingSoapsData(response.data.products)
       }
     } catch (error) {
       console.log('cannot retrieve list')
