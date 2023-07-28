@@ -4,6 +4,7 @@ import Product from './Product.js';
 import axios from 'axios';
 import { useState, useEffect, useContext } from 'react';
 import { ShopContext } from "../context/ShopContextProvider";
+import SimpleBackdrop from "./SimpleBackdrop.js";
 
 const Container = styled.div`
 padding: 20px;
@@ -32,16 +33,18 @@ const Products = () => {
  
   return (
     <Container>
-      {soapsData.map(item=>(
-      <Product 
-      id={item.productId}
-      quantity = {1}
-      title={item.title}
-      img={item.img}
-      desc={item.description}
-      price={item.price}
-       />
-      ))}
+      {soapsData ? soapsData.map(item=>(
+        <Product 
+          id={item.productId}
+          quantity = {1}
+          title={item.title}
+          img={item.img}
+          desc={item.description}
+          price={item.price}
+        />
+      ))
+       : <SimpleBackdrop/>
+      }
     </Container>
   )
 };

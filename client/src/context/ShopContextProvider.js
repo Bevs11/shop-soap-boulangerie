@@ -1,5 +1,5 @@
 import React, {createContext, useState} from 'react'
-import { popularProducts } from '../data';
+
 
 export const ShopContext = createContext(null);
 
@@ -33,7 +33,7 @@ const ShopContextProvider = (props) => {
   const [cartItems, setCartItems] = useState([]);
   const [viewingId, setViewingId] = useState('a001');
   const [userInformation, setUserInformation] = useState(initialUserInfo);
-  const [soapsData, setSoapsData] = useState([]);
+  const [soapsData, setSoapsData] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isUserAdmin, setIsUserAdmin] = useState(false);
   const [total, setTotal] = useState(0);
