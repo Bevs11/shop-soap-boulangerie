@@ -84,11 +84,7 @@ const NavBar = () => {
                     <NavigationItem onClick={() => navigate("/products")}>Products
                     </NavigationItem> 
                 </NavigationContainer>                                                    
-                {!isLoggedIn && 
-                <NavigationContainer>
-                    <NavigationItem onClick={() => navigate("/login")}>Login</NavigationItem>
-                </NavigationContainer>
-                }
+              
                 {isUserAdmin && 
                 <NavigationContainer>
                     <NavigationItem onClick={() => navigate("/dashboard")}></NavigationItem>
@@ -99,9 +95,13 @@ const NavBar = () => {
                         Cart/Checkout
                     </NavigationItem>
                 </NavigationContainer>          
-                {isLoggedIn && 
+                {isLoggedIn ? 
                 <NavigationContainer>
                     <NavigationItem onClick={() => navigate("/logout")}>Logout</NavigationItem>
+                </NavigationContainer>
+                :
+                <NavigationContainer>
+                    <NavigationItem onClick={() => navigate("/login")}>Login</NavigationItem>
                 </NavigationContainer>
                 }                                
             </Right>
