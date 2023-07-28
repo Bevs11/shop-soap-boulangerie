@@ -140,7 +140,7 @@ const LoginPage = () => {
                     </Button>  
                 </form>
                 <div>Don't have an account yet? 
-                    <Link to='/registration'>REGISTER HERE</Link>
+                    <Link to='/registration'>{" "}REGISTER HERE</Link>
                 </div>
             </Wrapper>
         </Container>
