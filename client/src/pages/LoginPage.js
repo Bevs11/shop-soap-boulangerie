@@ -75,23 +75,22 @@ const LoginPage = () => {
             
         if( response.status === 200 ){
       
-            // localStorage.setItem('token', response.data.token );
+            localStorage.setItem('token', response.data.token );
           
-            // let newUserInfo = userInformation;
+            let newUserInfo = userInformation;
 
-            // newUserInfo.username = response.data.username;
-            // newUserInfo.userId = response.data.id;
+            newUserInfo.username = response.data.username;
+            newUserInfo.userId = response.data.id;
           
-            // setUserInformation(newUserInfo);
-
-            // setIsLoggedIn(true);
+            setUserInformation(newUserInfo);
+            setIsLoggedIn(true);
             
-            // if (!response.data.isAdmin) {
-            //     setIsUserAdmin(true);
-            //     navigate('/dashboard');
-            // }else {
-            //     navigate('/'); 
-            // }
+            if (!response.data.isAdmin) {
+                setIsUserAdmin(true);
+                navigate('/dashboard');
+            }else {
+                navigate('/'); 
+            }
            
             alert('You are logged in');
 
@@ -135,7 +134,6 @@ const LoginPage = () => {
                     </div>
                     {error && <ErrorMessage>{errorMessage.password}</ErrorMessage>}
                     <Button > 
-                        {/*TODO: change to */}
                         <Link to='/ordersuccessful' onClick={handleClick}>LOGIN</Link>
                     </Button>  
                 </form>
