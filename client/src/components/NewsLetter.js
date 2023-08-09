@@ -50,7 +50,7 @@ const NewsLetter = () => {
   const onClickHandler = (e) => {
     e.preventDefault();
     if (email !== ''){
-      axios.post('http://localhost:8010/api/v1/emails/addemail', {email}).then(response => {
+      axios.post('https://shop-soap-boulangerie-api.onrender.com/api/v1/emails/addemail', {email}).then(response => {
         if (response.status === 201) {
           alert('Email submitted. Thank you for subscribing to our newsletter.');
           setEmail('');

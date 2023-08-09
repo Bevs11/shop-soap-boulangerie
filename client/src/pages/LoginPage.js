@@ -83,7 +83,7 @@ const LoginPage = () => {
             newUserInfo.userId = response.data.id;
           
             setUserInformation(newUserInfo);
-            setIsLoggedIn(true);
+            setIsLoggedIn(true); // changes login status to true
             
             if (!response.data.isAdmin) {
                 setIsUserAdmin(true);
@@ -133,8 +133,8 @@ const LoginPage = () => {
                             required/>
                     </div>
                     {error && <ErrorMessage>{errorMessage.password}</ErrorMessage>}
-                    <Button > 
-                        <Link to='/ordersuccessful' onClick={handleClick}>LOGIN</Link>
+                    <Button onClick={handleClick}> 
+                        LOGIN
                     </Button>  
                 </form>
                 <div>Don't have an account yet? 
