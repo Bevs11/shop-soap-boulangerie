@@ -46,8 +46,15 @@ const OrderSummary = () => {
     
     function isEmpty() {
         if(cartItems.length !== 0) {
-            setDiscount(30);
-            setShipping(60);
+            if(subTotal >= 500){
+                setDiscount(30);
+                setShipping(0);
+            }else{
+                setDiscount(30);
+                setShipping(60);
+            }
+            
+            
         } else {
             setDiscount(0);
             setShipping(0);
