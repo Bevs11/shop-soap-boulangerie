@@ -52,13 +52,40 @@ margin: 20px 0;
 
     //Component that displays all items inside the cart
 const ShoppingBag = (props) => {
-    const { removingFromCart, editQuantity} = useContext(ShopContext);
-    
+    const { cartItems, setCartItems } = useContext(ShopContext);
     const [partialTotal, setPartialTotal] = useState();
+    const [quantity, setQuantity] = useState(null);
 
     useEffect(() => {
-        setPartialTotal(props.quantity*props.price);
-    }, [editQuantity, removingFromCart]);
+        setQuantity(props.quantity);
+        setPartialTotal(quantity * props.price)
+    }, [cartItems])
+
+    // funciton for delete button
+    const removeFromCart = (id) => {
+        let index = cartItems.findIndex((item) => item.productId === id);
+        let newCart = [...cartItems];
+        newCart.splice(index, 1)
+        setCartItems(newCart);
+    }
+
+    // function to add to cart
+    const editItemQuantity = (operator, id) => {
+        let index = cartItems.findIndex((item) => item.productId === id);
+        if(quantity <= 20) {
+            let newCart = [...cartItems];
+            if(operator === "add"){
+                newCart[index].quantity += 1;
+            } else {
+                newCart[index].quantity -= 1;
+            }
+            setCartItems(newCart);     
+        }
+    }
+
+    
+
+
 
     return (
     <Container>
@@ -67,20 +94,22 @@ const ShoppingBag = (props) => {
                 <ProductDetail>
                     <Image src={props.img} />
                     <Details>
-                        <ProductName><b>Product:</b>{props.title}</ProductName>
-                        <ProductId><b>ID:</b>{props.itemId}</ProductId>
+                        <ProductName><b>Product:{" "}</b>{props.title}</ProductName>
+                        <ProductId><b>ID:{" "}</b>{props.itemId}</ProductId>
                     </Details>
                 </ProductDetail>
                 <PriceDetail>
                     <ProductAmountContainer>
-                        <button onClick={() => editQuantity("minus", props.itemId)}>
+                        <button onClick={() => editItemQuantity("minus", props.itemId)}>
                             <RemoveIcon/>
                         </button>
-                        <ProductAmount>{props.quantity}</ProductAmount>
-                        <button onClick={() => editQuantity("add", props.itemId)}>
+                        <ProductAmount>{quantity}</ProductAmount>
+                        <button onClick={() => editItemQuantity("add", props.itemId)}>
                             <AddIcon/>
                         </button>
-                        <button onClick={()=> removingFromCart(props.itemId)}>Delete</button>
+                        <button style={{marginLeft: "10px"}} onClick={() => removeFromCart(props.itemId)}>
+                            Delete
+                        </button>
                     </ProductAmountContainer>
                     <ProductPrice>PerPiece: P {props.price}.00</ProductPrice>
                     <ProductPrice>Total: P {partialTotal}.00</ProductPrice>

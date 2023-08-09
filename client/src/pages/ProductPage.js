@@ -70,7 +70,7 @@ cursor: pointer;
 const ProductPage = () => {
     let  navigate = useNavigate();
     
-    const {addingToCart, removingFromCart, viewingId, cartItems, soapsData, setCartItems} = useContext(ShopContext);
+    const { viewingId, cartItems, soapsData, setCartItems} = useContext(ShopContext);
 
     const [soapQuantity, setSoapQuantity] = useState(1);
 
@@ -83,19 +83,43 @@ const ProductPage = () => {
         } 
     };
     findIndex();
-    let newSoapObject = {
-        productId: viewingId,
-        quantity: soapQuantity,
-        title: soapsData[soapIndex].title,
-        img: soapsData[soapIndex].img,
-        description: soapsData[soapIndex].description,
-        price: soapsData[soapIndex].price
-    };
+   
+    let newSoapObject = {};
+    const createNewSoapData = (index, quantity) => {
+        newSoapObject = {
+            productId: soapsData[index].productId,
+            quantity: quantity,
+            title: soapsData[index].title,
+            img: soapsData[index].img,
+            description: soapsData[index].description,
+            price: soapsData[index].price
+        };
+
+    }
     
     const goToCart = (e) => {
         e.preventDefault();
         console.log('new soap object product page', newSoapObject);
-        setCartItems(cartItems => [...cartItems, newSoapObject]);
+        
+        if(cartItems.find(item => item.productId === viewingId)){
+            console.log("viewing in cart");
+            let index = cartItems.findIndex(item => item.productId === viewingId);
+            let newQuantity = cartItems[index].quantity += soapQuantity;
+            createNewSoapData(index, newQuantity);
+            console.log("newsoap object", newSoapObject); // correct
+            let newCart = cartItems.splice(index, 1);
+            console.log("new cart", newCart);
+            //console.log("new cart", newCart.push(newSoapObject));
+
+            setCartItems(newCart);
+    
+        } else {
+            
+            createNewSoapData(soapIndex, soapQuantity)
+            setCartItems(cartItems => [...cartItems, newSoapObject]);
+        }
+
+
         navigate('/cart');
     };
     
