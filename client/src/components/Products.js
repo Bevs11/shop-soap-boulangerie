@@ -13,10 +13,11 @@ flex-wrap: wrap
 `;
 
   //Component for the ProductList that displays all available products for sale
-const Products = () => { 
+const Products = (props) => { 
   const { soapsData, settingSoapsData} = useContext(ShopContext);
+  
 
-  const getSoapData = async () => {
+  const getSoapData = async (props) => {
     try{
       const response = await axios.get("https://shop-soap-boulangerie-api.onrender.com/api/v1/products/get/active");
       if (response) {
