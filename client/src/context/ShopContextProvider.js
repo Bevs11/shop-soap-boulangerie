@@ -103,20 +103,7 @@ const ShopContextProvider = (props) => {
       console.log('added item: ',cartItems);  
   }
 
-  // const removingFromCart = (itemId) => {
-  //   let itemIndex;
-  //   for (let i = 0; i < cartItems.length ; i++) {
-  //       if (cartItems[i].productId === itemId) {
-  //         itemIndex = i;
-  //       }
-  //   }
-  //   if (itemIndex)  {
-  //       setCartItems(cartItems.splice(itemIndex, 1));
-  //       console.log("item removed", cartItems);
-  //   }
-    
-  // }
-
+// Log changes in cart
 useEffect(() => {
   console.log("cart edited", cartItems);
 },[cartItems])

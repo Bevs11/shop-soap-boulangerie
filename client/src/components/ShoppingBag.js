@@ -56,10 +56,7 @@ const ShoppingBag = (props) => {
     const [partialTotal, setPartialTotal] = useState();
     const [quantity, setQuantity] = useState(null);
 
-    useEffect(() => {
-        setQuantity(props.quantity);
-        setPartialTotal(quantity * props.price)
-    }, [cartItems])
+
 
     // funciton for delete button
     const removeFromCart = (id) => {
@@ -72,18 +69,26 @@ const ShoppingBag = (props) => {
     // function to add to cart
     const editItemQuantity = (operator, id) => {
         let index = cartItems.findIndex((item) => item.productId === id);
-        if(quantity <= 20) {
-            let newCart = [...cartItems];
-            if(operator === "add"){
-                newCart[index].quantity += 1;
-            } else {
-                newCart[index].quantity -= 1;
+        let newCart = [...cartItems];
+        if(operator === "add"){
+            if (newCart[index].quantity < 20) {
+            newCart[index].quantity += 1;
             }
-            setCartItems(newCart);     
+        } else {
+            newCart[index].quantity -= 1;
         }
+        if(newCart[index].quantity <= 0){
+            newCart.splice(index, 1);
+        } 
+
+        
+        setCartItems(newCart);
     }
 
-    
+    useEffect(() => {
+        setQuantity(props.quantity);
+        setPartialTotal(quantity * props.price)
+    }, [cartItems, editItemQuantity]);
 
 
 
