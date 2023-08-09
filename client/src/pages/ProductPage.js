@@ -99,18 +99,12 @@ const ProductPage = () => {
     
     const goToCart = (e) => {
         e.preventDefault();
-        console.log('new soap object product page', newSoapObject);
         
         if(cartItems.find(item => item.productId === viewingId)){
-            console.log("viewing in cart");
             let index = cartItems.findIndex(item => item.productId === viewingId);
             let newQuantity = cartItems[index].quantity += soapQuantity;
             createNewSoapData(index, newQuantity);
-            console.log("newsoap object", newSoapObject); // correct
-            let newCart = cartItems.splice(index, 1);
-            console.log("new cart", newCart);
-            //console.log("new cart", newCart.push(newSoapObject));
-
+            let newCart = cartItems.splice(index, 1);                       
             setCartItems(newCart);
     
         } else {

@@ -73,6 +73,10 @@ const Product = (props) => {
   const  navigate = useNavigate();
   const { settingId, addingToCart, setCartItems, cartItems, setViewingId} = useContext(ShopContext);
 
+
+
+
+
   const handleAddToCart = (e) => {
     e.preventDefault();
     let newSoapObject = {
@@ -83,7 +87,15 @@ const Product = (props) => {
       description: props.desc,
       price: props.price
     }
-    setCartItems(cartItems => [...cartItems, newSoapObject]);
+    if(cartItems.find((item) => item.productId === props.id)){
+      console.log("id is", props.id);
+      let index = cartItems.findIndex((item) => item.productId === props.id);
+      let newCart = [...cartItems];
+      newCart[index].quantity += 1;
+      setCartItems(newCart);
+    } else {
+      setCartItems(cartItems => [...cartItems, newSoapObject]);
+    }
   }
 
   const viewId = (e) => {

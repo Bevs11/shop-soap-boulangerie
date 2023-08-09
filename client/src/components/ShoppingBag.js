@@ -79,9 +79,7 @@ const ShoppingBag = (props) => {
         }
         if(newCart[index].quantity <= 0){
             newCart.splice(index, 1);
-        } 
-
-        
+        }        
         setCartItems(newCart);
     }
 
