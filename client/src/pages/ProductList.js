@@ -1,6 +1,9 @@
 import Categories from "../components/Categories";
 import Products from "../components/Products";
 import styled from "styled-components";
+import { useEffect, useState, useContext } from "react";
+import { ShopContext } from "../context/ShopContextProvider";
+
 
 const Container = styled.div``;
 const Title = styled.h1`
@@ -25,37 +28,52 @@ margin-right: 20px;
 const Option = styled.option``;
 
 const ProductList = () => {
+  const [filters, setFilters] = useState({});
+  const [sort, setSort] = useState("newest");
+  const { soapsData, settingSoapsData, soapFilters, setSoapFilters} = useContext(ShopContext);
+
+  const handleFilters = (e) => {
+    const value = e.target.value;
+    setFilters({...filters, [e.target.name]: value})
+    
+  }
+
+  useEffect(()=>{
+    setSoapFilters(filters)
+    console.log("filters", filters)
+  },[filters])
+
   return (
     <Container>
       <Title>Product List</Title>
       <FilterContainer>
         <Filter>
           <FilterText>Filter Products:</FilterText>
-          <Select>
+          <Select name="type" onChange={handleFilters}>
             <Option disabled selected>Soap Option</Option>
-            <Option>Fragrant Soap</Option>
-            <Option>Facial Soap</Option>
-            <Option>Assorted Soap</Option>
+            <Option value={"fragrant soap"}>Fragrant Soap</Option>
+            <Option value={"facial soap"}>Facial Soap</Option>
+            <Option value={"body soap"}>Body Soap</Option>
+            <Option value={"all"}>All</Option>
           </Select>
-          <Select>
+          {/*<Select name="collection" onChange={handleFilters}>
             <Option disabled selected>Soap Collection</Option>
-            <Option>Best Seller</Option>
-            <Option>Summer Collection</Option>
-            <Option>Rainy Season Collection</Option>
-          </Select>
+            <Option value={"best seller"}>Best Seller</Option >
+            <Option value={"summer collection"}>Summer Collection</Option>
+            <Option value={"rainy season collection"}>Rainy Season Collection</Option>
+            </Select> */}
         </Filter>
         <Filter>
           <FilterText>Sort Products:</FilterText>
-          <Select>
+          <Select name="sort" onChange={handleFilters}>
             <Option disabled selected>Sort</Option>
-            <Option>Newest</Option>
-            <Option>Price (asc)</Option>
-            <Option>Price (desc)</Option>
+            <Option value={"ascending"}>Price (asc)</Option>
+            <Option value={"descending"}>Price (desc)</Option>
           </Select>
         </Filter> 
       </FilterContainer>
       <Categories/>
-      <Products/>
+      <Products filters={filters}/>
     </Container>
   )
 };

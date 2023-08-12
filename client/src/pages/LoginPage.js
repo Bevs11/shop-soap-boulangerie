@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { ShopContext } from "../context/ShopContextProvider";
+import SimpleBackdrop from '../components/SimpleBackdrop';
 
 const Container = styled.div`
 width: 100vw;
@@ -48,59 +49,70 @@ margin-bottom: 20px;
     background-color: pink;
 }
 `;
+const ErrorMessage = styled.div`
+color: red;
+display: flex;
+justify-content: center;
+`;
 
 const LoginPage = () => {
-    let  navigate = useNavigate();
-        //navigate to dashboard
+    let  navigate = useNavigate(); //navigate to dashboard
+    const [error, setError] = useState(false);    
 
     const [ username, setUsername ] = useState('');
-    const [ password, setPassword ] = useState('')  
+    const [ password, setPassword ] = useState('');
+    const [loading, setLoading] = useState(false);  
          
-    const { userInformation, isLoggedIn, setIsLoggedIn, setUserInformation, isUserAdmin, setIsUserAdmin} = useContext(ShopContext);
+    const { userInformation, setIsLoggedIn, setUserInformation, setIsUserAdmin} = useContext(ShopContext);
 
+    const errorMessage = {
+        username: "Incorrect Username",
+        password: "Incorrect Password"
+    }
     
-    
-    
+    const loginHandler = async () => {
+        try {
+            const response = await axios.post( 'https://shop-soap-boulangerie-api.onrender.com/api/v1/user/login', { username, password });
+            setLoading(false);
+            if( response.status === 200 ){      
+                localStorage.setItem('token', response.data.token );
+                let newUserInfo = userInformation;    
+                newUserInfo.username = response.data.username;
+                newUserInfo.userId = response.data.id;              
+                setUserInformation(newUserInfo);
+                setIsLoggedIn(true); // changes login status to true                
+                if (!response.data.isAdmin) {
+                    setIsUserAdmin(true);
+                    navigate('/dashboard');
+                }else {
+                    navigate('/'); 
+                }               
+                alert('You are logged in');    
+            } else {
+                console.log("invalid username or password");
+                setError(true);
+            }
+
+        } catch (error){
+            console.log("invalid password")
+            setError(true);
+        }
+    }
+
     function handleClick(e) {
         e.preventDefault();
-        axios.post( 'http://localhost:8010/api/v1/user/login', { username, password }).then( response => {
-            
-        if( response.status === 200 ){
-      
-            localStorage.setItem('token', response.data.token );
-          
-            let newUserInfo = userInformation;
-
-            newUserInfo.username = response.data.username;
-            newUserInfo.userId = response.data.id;
-          
-            setUserInformation(newUserInfo);
-
-            setIsLoggedIn(true);
-            
-            if (!response.data.isAdmin) {
-                setIsUserAdmin(true);
-                navigate('/dashboard');
-            }else {
-                navigate('/'); 
-            }
-           
-            alert('You are logged in');
-
-        } else {
-            console.log("invalid username or password");
-        }
-
-      })
-      
-      setPassword("");
-      setUsername("");
+        setLoading(true);
+        loginHandler();
+        setPassword(null);
+        setUsername(null);
     }
 
   return (
     <div>
         <Container>
-            <Wrapper>
+            {loading 
+            ? <SimpleBackdrop/>
+            : <Wrapper>
                 <Title>User Login</Title>
                 <form>
                     <div>
@@ -121,15 +133,16 @@ const LoginPage = () => {
                             onChange={ e => setPassword(e.target.value)}
                             required/>
                     </div>
-                    <Button > 
-                        {/*TODO: change to */}
-                        <Link to='/ordersuccessful' onClick={handleClick}>LOGIN</Link>
+                    {error && <ErrorMessage>{errorMessage.password}</ErrorMessage>}
+                    <Button onClick={handleClick}> 
+                        LOGIN
                     </Button>  
                 </form>
                 <div>Don't have an account yet? 
-                    <Link to='/registration'>REGISTER HERE</Link>
+                    <Link to='/registration'>{" "}REGISTER HERE</Link>
                 </div>
-            </Wrapper>
+              </Wrapper>
+            }
         </Container>
     </div>
   )

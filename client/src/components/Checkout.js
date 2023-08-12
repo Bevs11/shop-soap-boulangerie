@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Link, useNavigate } from 'react-router-dom';
 import { ShopContext } from "../context/ShopContextProvider";
 import axios from "axios";
+import SimpleBackdrop from '../components/SimpleBackdrop';
 
 /* Styling*/
 const Container = styled.div`
@@ -82,42 +83,42 @@ const Checkout = () => {
   const regexLetters = /[A-Za-z]/;
 
     // input validation
-  const {setUserInformation, userInformation, cartItems, isLoggedIn, total} = useContext(ShopContext);
+  const {setUserInformation, userInformation, cartItems, isLoggedIn, total, setCartItems} = useContext(ShopContext);
   const [errorMessage, setErrorMessage] = useState('Please fill out all fields');
+  const [name, setName] = useState(null); // name in UI
+  const [loading, setLoading] = useState(false); //loading
 
   const token = localStorage.getItem('token');
   const config = {
-    headers: {
-      Authorization: `Bearers ${token}`
-    }
-  }
-
+    headers: {"Authorization": `Bearers ${token}`}
+    };
+  
   const getUserData = async() => {
     try {
-      const response = await axios.get(`http://localhost:8010/api/v1/user/${userInformation.username}`, config );
+      // TODO: change url
+      const response = await axios.get(`https://shop-soap-boulangerie-api.onrender.com/api/v1/user/getuser/${userInformation.username}`, config );
       if (response.status === 200) {
-      let newUserObject = userInformation;
-      
-      newUserObject.firstname = response.data.user[0].firstname;
-      newUserObject.lastname = response.data.user[0].lastname;
-      newUserObject.email = response.data.user[0].email;
-
-      setUserInformation(newUserObject);
-  
-      console.log('checkout user', userInformation);
-      console.log('total', total);
+        // save user data in userInformation
+        setUserInformation(response.data.user);
+        // TODO: remove this block of code
+        // console.log('checkout user', response.data.user);
+        // console.log('total', total);
       }
     }catch (error) {
-      console.log('Getting User data Unsuccessful');
+      console.log('Getting User data Unsuccessful', error);
     }
   };
 
   useEffect(()=> {
     if (isLoggedIn){
       getUserData();
-      
     }
   }, []);
+
+  // set name in UI
+  useEffect(()=>{
+    setName(`${userInformation.firstname} ${userInformation.lastname}`);
+  },[userInformation])
 
   useEffect(()=> {
     isValid(state);
@@ -146,8 +147,9 @@ const Checkout = () => {
   })
  
 
-  function sendOrder(e) {
+const sendOrder = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     let orderDetails = {
       userId: '',
@@ -164,28 +166,22 @@ const Checkout = () => {
 
     console.log('order details', orderDetails);
   
-
-    axios.post('http://localhost:8010/api/v1/orders/', orderDetails ).then(response => {
+    try{
+      
+      const response = await axios.post('https://shop-soap-boulangerie-api.onrender.com/api/v1/orders/neworder', orderDetails );
       if (response.status === 201){
+        console.log("order details", response.data);
+        setLoading(false);
         alert('order successful');
         navigate('/ordersuccessful');
-      } else {
-        console.log('order was not sent');
-      }
-    })
+        setCartItems([]);
+      } 
+    }catch(error){
+      console.log('order was not sent');
+    }
   }
  
-
-    // Function to navigate page to OrderSuccessful page
-  function handleClick(e) {
-    
-    if (isValid(state)){
-      setUserInformation(state);
-      
-    }
-  };
-
-    // event handler for all inputs
+  // event handler for all inputs
   function onChange(e) {
     const action = {
       input: e.target.name,
@@ -196,17 +192,19 @@ const Checkout = () => {
 
   return (
     <Container>
-    <Wrapper>
+      {loading 
+      ? <SimpleBackdrop/> 
+      : <Wrapper>
         <Title>ORDER FORM</Title>
         {
           !isLoggedIn && <p>Please register/login first before ordering</p>
-        }
-        
-        
-        
+        }        
         <Form>
-            <Label>Name:</Label>
-            <div>{`${userInformation.firstname} ${userInformation.lastname}`}</div>
+            <Label>Name:</Label> 
+            {userInformation 
+            ? <div>{name}</div>
+            : <div>not working</div>}
+            
             <Label>Contact Number:</Label>
             <Input 
               type='text'
@@ -227,7 +225,9 @@ const Checkout = () => {
                     <Link to='/registration'>REGISTER HERE</Link>
             </div>            
         </Form>
-    </Wrapper>
+        </Wrapper>
+      }
+    
 </Container>
   )
 };

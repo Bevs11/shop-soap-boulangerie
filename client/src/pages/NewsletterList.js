@@ -44,7 +44,7 @@ const NewsletterList = () => {
 
   const fetchData = async() => {
     try {
-      const response = await axios.get('http://localhost:8010/api/v1/emails/' );
+      const response = await axios.get('https://shop-soap-boulangerie-api.onrender.com/api/v1/emails/addemail' );
       setNewsletterList(response.data.email);
       console.log(newsletterList);
     } catch (error) {

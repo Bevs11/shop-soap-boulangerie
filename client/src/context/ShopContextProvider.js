@@ -1,5 +1,5 @@
-import React, {createContext, useState} from 'react'
-import { popularProducts } from '../data';
+import React, {createContext, useEffect, useState} from 'react'
+
 
 export const ShopContext = createContext(null);
 
@@ -33,10 +33,11 @@ const ShopContextProvider = (props) => {
   const [cartItems, setCartItems] = useState([]);
   const [viewingId, setViewingId] = useState('a001');
   const [userInformation, setUserInformation] = useState(initialUserInfo);
-  const [soapsData, setSoapsData] = useState([]);
+  const [soapsData, setSoapsData] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isUserAdmin, setIsUserAdmin] = useState(false);
   const [total, setTotal] = useState(0);
+  const [soapFilters, setSoapFilters] = useState({})
   
   // setting if user is logged in
   
@@ -100,30 +101,24 @@ const ShopContextProvider = (props) => {
           }
       }
       
-    
+      console.log('added item: ',cartItems);  
   }
 
-  const removingFromCart = (itemId) => {
-    let itemIndex;
-    for (let i = 0; i < cartItems.length ; i++) {
-        if (cartItems[i].productId === itemId) {
-          itemIndex = i;
-        }
-    }
-    if (itemIndex)  {
-        setCartItems(cartItems.splice(itemIndex, 1));
-    }
-  }
+// Log changes in cart
+useEffect(() => {
+  console.log("cart edited", cartItems);
+},[cartItems])
+
 
   const editQuantity = (operation, id) => {
     let itemIndex;
     for (let i = 0; i < cartItems.length ; i++) {
-      if(cartItems[i].productId == id){
+      if(cartItems[i].productId === id){
         itemIndex = i;
       }
     }
 
-    if(operation == "add"){
+    if(operation === "add"){
       cartItems[itemIndex].quantity += 1; 
     }else{
       cartItems[itemIndex].quantity -= 1; 
@@ -144,7 +139,7 @@ const ShopContextProvider = (props) => {
 
  
     //Summary of all data within this context
-  const contextValue = {cartItems, settingId, viewingId, userInformation, settingSoapsData, soapsData, isLoggedIn, addingToCart, removingFromCart, editQuantity, setIsLoggedIn, setUserInformation, isUserAdmin, setIsUserAdmin, setCartItems, setViewingId, total, setTotal};
+  const contextValue = {cartItems, settingId, viewingId, userInformation, settingSoapsData, soapsData, isLoggedIn, addingToCart, editQuantity, setIsLoggedIn, setUserInformation, isUserAdmin, setIsUserAdmin, setCartItems, setViewingId, total, setTotal, soapFilters, setSoapFilters};
 
   return (
     <ShopContext.Provider value={contextValue}>

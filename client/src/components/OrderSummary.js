@@ -31,7 +31,7 @@ const OrderSummary = () => {
     const [discount, setDiscount] = useState(0);
     const [grandTotal, setGrandTotal] = useState(0);
 
-    const {cartItems, setTotal, total} = useContext(ShopContext);
+    const {cartItems, setTotal} = useContext(ShopContext);
     
     // totalCost is the sum of all items added in the cart
     const computeSubTotal = () => {
@@ -44,18 +44,28 @@ const OrderSummary = () => {
         } 
     };
     
+    // check for items in cart and subtotal
     function isEmpty() {
         if(cartItems.length !== 0) {
-            setDiscount(30);
-            setShipping(60);
+            if(subTotal >= 500){
+                setDiscount(30);
+                setShipping(0);
+            }else{
+                setDiscount(30);
+                setShipping(60);
+            } 
         } else {
             setDiscount(0);
             setShipping(0);
         }
     };
 
+    
     useEffect(()=> {
         isEmpty();
+    },[subTotal])
+
+    useEffect(()=> {
         computeSubTotal();
         setGrandTotal(subTotal + shipping - discount);
         setTotal(grandTotal);
