@@ -36,6 +36,7 @@ const Products = (props) => {
     <Container>
       {soapsData ? soapsData.map(item=>(
         <Product 
+          key={item.productId}
           id={item.productId}
           quantity = {1}
           title={item.title}

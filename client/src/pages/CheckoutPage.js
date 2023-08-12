@@ -33,7 +33,9 @@ const CheckoutPage = () => {
           <div>
             {
               cartItems.map(product => {                
-                return <ShoppingBag title={product.title}
+                return <ShoppingBag 
+                  key={product.productId}
+                  title={product.title}
                   img={product.img}
                   price={product.price}
                   itemId={product.productId}
