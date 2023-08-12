@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { ShopContext } from "../context/ShopContextProvider";
+import SimpleBackdrop from '../components/SimpleBackdrop';
 
 const Container = styled.div`
 width: 100vw;
@@ -98,30 +99,20 @@ const LoginPage = () => {
         }
     }
 
-
-
-
-    
     function handleClick(e) {
         e.preventDefault();
         setLoading(true);
         loginHandler();
-    //     axios.post( 'https://shop-soap-boulangerie-api.onrender.com/api/v1/user/login', { username, password }).then( response => {
-            
-       
-    //     console.log(response);
-    //   }).catch((error) => {
-        
-    //   })
-      
-      setPassword(null);
-      setUsername(null);
+        setPassword(null);
+        setUsername(null);
     }
 
   return (
     <div>
         <Container>
-            <Wrapper>
+            {loading 
+            ? <SimpleBackdrop/>
+            : <Wrapper>
                 <Title>User Login</Title>
                 <form>
                     <div>
@@ -150,7 +141,8 @@ const LoginPage = () => {
                 <div>Don't have an account yet? 
                     <Link to='/registration'>{" "}REGISTER HERE</Link>
                 </div>
-            </Wrapper>
+              </Wrapper>
+            }
         </Container>
     </div>
   )
