@@ -51,20 +51,8 @@ router.get(`/ordernumber/:id`, verifyTokenAndAdmin, ( request, response ) => {
         }
     });
 });
-    // new order
-    // TEST URL: http://localhost:8010/api/v1/orders/
-    /* {
-        "userId": "c001",
-        "items": 
-        [{
-            "productId": "a001",
-            "quantity": 3
-        }],
-        "amount": 98,
-        "address": "5th avenue",
-        "status": "completed",
-        "contact": "0987789xxxx" 
-    } */
+
+// new order
 router.post(`/neworder`, ( request, response ) => {
     const newOrder = new Order({ 
         userId: request.body.userId, 

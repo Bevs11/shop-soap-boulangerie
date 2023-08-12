@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Link, useNavigate } from 'react-router-dom';
 import { ShopContext } from "../context/ShopContextProvider";
 import axios from "axios";
+import SimpleBackdrop from '../components/SimpleBackdrop';
 
 /* Styling*/
 const Container = styled.div`
@@ -84,7 +85,8 @@ const Checkout = () => {
     // input validation
   const {setUserInformation, userInformation, cartItems, isLoggedIn, total} = useContext(ShopContext);
   const [errorMessage, setErrorMessage] = useState('Please fill out all fields');
-  const [name, setName] = useState(null);
+  const [name, setName] = useState(null); // name in UI
+  const [loading, setLoading] = useState(false); //loading
 
   const token = localStorage.getItem('token');
   const config = {
@@ -96,16 +98,11 @@ const Checkout = () => {
       // TODO: change url
       const response = await axios.get(`https://shop-soap-boulangerie-api.onrender.com/api/v1/user/getuser/${userInformation.username}`, config );
       if (response.status === 200) {
-        // let newUserObject = userInformation.user;
-        
-        // newUserObject.firstname = response.data.user[0].firstname;
-        // newUserObject.lastname = response.data.user[0].lastname;
-        // newUserObject.email = response.data.user[0].email;
-
+        // save user data in userInformation
         setUserInformation(response.data.user);
-    
-        console.log('checkout user', response.data.user);
-        console.log('total', total);
+        // TODO: remove this block of code
+        // console.log('checkout user', response.data.user);
+        // console.log('total', total);
       }
     }catch (error) {
       console.log('Getting User data Unsuccessful', error);
@@ -118,6 +115,7 @@ const Checkout = () => {
     }
   }, []);
 
+  // set name in UI
   useEffect(()=>{
     setName(`${userInformation.firstname} ${userInformation.lastname}`);
   },[userInformation])
@@ -149,7 +147,7 @@ const Checkout = () => {
   })
  
 
-  function sendOrder(e) {
+const sendOrder = async (e) => {
     e.preventDefault();
 
     let orderDetails = {
@@ -167,15 +165,16 @@ const Checkout = () => {
 
     console.log('order details', orderDetails);
   
-
-    axios.post('http://localhost:8010/api/v1/orders/', orderDetails ).then(response => {
+    try{
+      const response = await axios.post('https://shop-soap-boulangerie-api.onrender.com/api/v1/orders/neworder', orderDetails );
       if (response.status === 201){
+        console.log("order details", response.data)
         alert('order successful');
         navigate('/ordersuccessful');
-      } else {
-        console.log('order was not sent');
-      }
-    })
+      } 
+    }catch(error){
+      console.log('order was not sent');
+    }
   }
  
 
