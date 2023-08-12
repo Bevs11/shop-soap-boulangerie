@@ -14,7 +14,7 @@ flex-wrap: wrap
 
   //Component for the ProductList that displays all available products for sale
 const Products = (filters, sort) => { 
-  const { soapsData, settingSoapsData} = useContext(ShopContext);
+  const { soapsData, settingSoapsData, soapFilters, setSoapFilters} = useContext(ShopContext);
   const [soaps, setSoaps] = useState([]);
 
   const getSoapData = async () => {
@@ -22,7 +22,10 @@ const Products = (filters, sort) => {
       const response = await axios.get("https://shop-soap-boulangerie-api.onrender.com/api/v1/products/get/active");
       if (response) {
         settingSoapsData(response.data.products);
-        setSoaps(response.data.products);
+        if (soaps.length === 0){
+          setSoaps(response.data.products);
+        }
+        
       }
     } catch (error) {
       console.log('cannot retrieve list')
@@ -38,16 +41,28 @@ const Products = (filters, sort) => {
         if(soapsData){
           if (filters){
             console.log("filters", soapsData, filters.filters.type);
-
-            const findCategory = (item, filter) => {
-              if (filter === "all"){
-                return true
-              } else {
-                return item.categories.includes( String(filter)); 
+            let newData;
+            if (filters.filters.type){
+              const findCategory = (item, filter) => {
+                if (filter === "all"){
+                  return true
+                } else {
+                  return item.categories.includes( String(filter)); 
+                }
               }
+              newData = soapsData.filter((soap) => findCategory(soap, filters.filters.type ));
+            }else{
+              newData = [...soapsData]
             }
-            const newData = soapsData.filter((soap) => findCategory(soap, filters.filters.type ));
+            
             console.log("new data", newData);
+            // if (filters.sort){
+            //   if (filters.sort === "ascending"){
+            //     newData.sort((a,b) =>{return a.price - b.price})
+            //   }else{
+            //     newData.sort((a,b) =>  - a.price + b.price)
+            //   }
+            // }            
             setSoaps(newData);
           } else {
             setSoaps(soapsData);

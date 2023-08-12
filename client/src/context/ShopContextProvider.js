@@ -37,6 +37,7 @@ const ShopContextProvider = (props) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isUserAdmin, setIsUserAdmin] = useState(false);
   const [total, setTotal] = useState(0);
+  const [soapFilters, setSoapFilters] = useState({})
   
   // setting if user is logged in
   
@@ -138,7 +139,7 @@ useEffect(() => {
 
  
     //Summary of all data within this context
-  const contextValue = {cartItems, settingId, viewingId, userInformation, settingSoapsData, soapsData, isLoggedIn, addingToCart, editQuantity, setIsLoggedIn, setUserInformation, isUserAdmin, setIsUserAdmin, setCartItems, setViewingId, total, setTotal};
+  const contextValue = {cartItems, settingId, viewingId, userInformation, settingSoapsData, soapsData, isLoggedIn, addingToCart, editQuantity, setIsLoggedIn, setUserInformation, isUserAdmin, setIsUserAdmin, setCartItems, setViewingId, total, setTotal, soapFilters, setSoapFilters};
 
   return (
     <ShopContext.Provider value={contextValue}>

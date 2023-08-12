@@ -35,7 +35,7 @@ export const categories = [
     {
         id: 3,
         img: 'https://chulaleague.org/wp-content/uploads/gravity_forms/41-94b1452192a94a48e77fa96a6a8e8f81/2019/08/soaps.jpg',
-        title: 'ASSORTED SOAPS'
+        title: 'BODY SOAPS'
     },
 
 ]

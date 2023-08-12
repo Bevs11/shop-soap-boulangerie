@@ -1,7 +1,9 @@
 import Categories from "../components/Categories";
 import Products from "../components/Products";
 import styled from "styled-components";
-import { useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { ShopContext } from "../context/ShopContextProvider";
+
 
 const Container = styled.div``;
 const Title = styled.h1`
@@ -28,11 +30,18 @@ const Option = styled.option``;
 const ProductList = () => {
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState("newest");
+  const { soapsData, settingSoapsData, soapFilters, setSoapFilters} = useContext(ShopContext);
 
   const handleFilters = (e) => {
     const value = e.target.value;
     setFilters({...filters, [e.target.name]: value})
+    
   }
+
+  useEffect(()=>{
+    setSoapFilters(filters)
+    console.log("filters", filters)
+  },[filters])
 
   return (
     <Container>
@@ -47,12 +56,12 @@ const ProductList = () => {
             <Option value={"body soap"}>Body Soap</Option>
             <Option value={"all"}>All</Option>
           </Select>
-          <Select name="collection" onChange={handleFilters}>
+          {/*<Select name="collection" onChange={handleFilters}>
             <Option disabled selected>Soap Collection</Option>
             <Option value={"best seller"}>Best Seller</Option >
             <Option value={"summer collection"}>Summer Collection</Option>
             <Option value={"rainy season collection"}>Rainy Season Collection</Option>
-          </Select>
+            </Select> */}
         </Filter>
         <Filter>
           <FilterText>Sort Products:</FilterText>
