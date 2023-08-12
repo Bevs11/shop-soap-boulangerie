@@ -48,19 +48,17 @@ return (
           <Route path='products/productpage' element={ <ProductPage/>} />
           <Route path='/products' element={ <ProductList/>} />
           <Route path='/cart' element={ <CheckoutPage />} /> 
-          <Route path='/ordersuccessful' element={ <OrderSuccessful />} />
-          
+          <Route path='/ordersuccessful' element={ <OrderSuccessful />} />          
           <Route path='/dashboard' element={ <Dashboard />} />
           <Route path='/registration' element={ <Registration />} />
           <Route path='/addproducts' element={ <AddProducts />} />
           <Route path='/removeproducts' element={ <RemoveProducts />} />
           <Route path='/editproducts' element={ <EditProducts />} />
           <Route path='/newsletterlist' element={ <NewsletterList />} />
-          <Route path='/orderslist' element={ <OrdersList />} />
-          {isLoggedIn
-            ? <Route path='/logout' element={ <LogoutPage />} /> 
-            : <Route path='/login' element={ <LoginPage />} />  
-          }
+          <Route path='/orderslist' element={ <OrdersList />} />          
+          <Route path='/logout' element={ <LogoutPage />} /> 
+          <Route path='/login' element={ <LoginPage />} />  
+          
           
         </Routes>
       </Container>

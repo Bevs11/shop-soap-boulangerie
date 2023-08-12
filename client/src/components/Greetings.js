@@ -15,8 +15,8 @@ const Greetings = () => {
   return (
     <div>
         {isLoggedIn
-        ? <Title>Hello, {userInformation?.username}</Title>
-        :<Title>Welcome, Customer!</Title>}
+        && <Title>Hello, {userInformation?.username}</Title>
+        }
     </div>
     
   )
