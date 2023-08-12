@@ -32,27 +32,32 @@ const Products = (filters, sort) => {
     getSoapData() 
   }, []);
 
-  const doSomething = () => {
-    console.log("isFiltered:", filters)
-  };
+  
   useEffect(()=> {
-    
-    if(filters){
-      doSomething()
-      // .then(function(){
-      //   if (filtered){
-      //     console.log("filtered");
-      //   } else {
-      //     console.log("not filtered");
-      //   }
-        
-      // })
-    }
+        if(soapsData){
+          if (filters){
+            console.log("filters", soapsData, filters.filters.type);
+
+            const findCategory = (item, filter) => {
+              if (filter === "all"){
+                return true
+              } else {
+                return item.categories.includes( String(filter)); 
+              }
+            }
+            const newData = soapsData.filter((soap) => findCategory(soap, filters.filters.type ));
+            console.log("new data", newData);
+            setSoaps(newData);
+          } else {
+            setSoaps(soapsData);
+          } 
+        }
+          
   }, [filters])
  
   return (
     <Container>
-      {soapsData ? soapsData.map(item=>(
+      {soaps ? soaps.map(item=>(
         <Product 
           key={item.productId}
           id={item.productId}
