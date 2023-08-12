@@ -22,7 +22,8 @@ const Products = (filters, sort) => {
       const response = await axios.get("https://shop-soap-boulangerie-api.onrender.com/api/v1/products/get/active");
       if (response) {
         settingSoapsData(response.data.products);
-        if (soaps.length === 0){
+        if (soaps.length === 0 && !filters){
+          console.log("triggered");
           setSoaps(response.data.products);
         }
         
@@ -36,7 +37,7 @@ const Products = (filters, sort) => {
     getSoapData() 
   }, []);
 
-  
+  console.log("filter", filters.filters.sort);
   useEffect(()=> {
         if(soapsData){
           if (filters){
@@ -55,14 +56,17 @@ const Products = (filters, sort) => {
               newData = [...soapsData]
             }
             
-            console.log("new data", newData);
-            // if (filters.sort){
-            //   if (filters.sort === "ascending"){
-            //     newData.sort((a,b) =>{return a.price - b.price})
-            //   }else{
-            //     newData.sort((a,b) =>  - a.price + b.price)
-            //   }
-            // }            
+            //console.log("new data", newData);
+            console.log("sort", sort);
+            if (filters.filters.sort === "ascending" || filters.filters.sort === "descending"){
+              if (filters.filters.sort === "ascending"){
+                newData.sort((a,b) =>{return a.price - b.price})
+                console.log("asc");
+              }else{
+                newData.sort((a,b) =>  {return -a.price + b.price})
+                console.log("des");
+              }
+            }            
             setSoaps(newData);
           } else {
             setSoaps(soapsData);

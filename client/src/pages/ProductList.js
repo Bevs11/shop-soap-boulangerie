@@ -65,15 +65,15 @@ const ProductList = () => {
         </Filter>
         <Filter>
           <FilterText>Sort Products:</FilterText>
-          <Select onChange={(e) => setSort(e.target.value)}>
+          <Select name="sort" onChange={handleFilters}>
             <Option disabled selected>Sort</Option>
             <Option value={"ascending"}>Price (asc)</Option>
-            <Option value={"decending"}>Price (desc)</Option>
+            <Option value={"descending"}>Price (desc)</Option>
           </Select>
         </Filter> 
       </FilterContainer>
       <Categories/>
-      <Products filters={filters} sort={sort}/>
+      <Products filters={filters}/>
     </Container>
   )
 };
