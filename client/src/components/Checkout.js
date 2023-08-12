@@ -181,17 +181,7 @@ const sendOrder = async (e) => {
     }
   }
  
-
-    // Function to navigate page to OrderSuccessful page
-  function handleClick(e) {
-    
-    if (isValid(state)){
-      setUserInformation(state);
-      
-    }
-  };
-
-    // event handler for all inputs
+  // event handler for all inputs
   function onChange(e) {
     const action = {
       input: e.target.name,
