@@ -21,7 +21,8 @@ const Products = (filters, sort) => {
     try{
       const response = await axios.get("https://shop-soap-boulangerie-api.onrender.com/api/v1/products/get/active");
       if (response) {
-        settingSoapsData(response.data.products)
+        settingSoapsData(response.data.products);
+        setSoaps(response.data.products);
       }
     } catch (error) {
       console.log('cannot retrieve list')
