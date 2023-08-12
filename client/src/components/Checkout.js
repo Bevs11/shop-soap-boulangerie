@@ -83,7 +83,7 @@ const Checkout = () => {
   const regexLetters = /[A-Za-z]/;
 
     // input validation
-  const {setUserInformation, userInformation, cartItems, isLoggedIn, total} = useContext(ShopContext);
+  const {setUserInformation, userInformation, cartItems, isLoggedIn, total, setCartItems} = useContext(ShopContext);
   const [errorMessage, setErrorMessage] = useState('Please fill out all fields');
   const [name, setName] = useState(null); // name in UI
   const [loading, setLoading] = useState(false); //loading
@@ -171,6 +171,7 @@ const sendOrder = async (e) => {
         console.log("order details", response.data)
         alert('order successful');
         navigate('/ordersuccessful');
+        setCartItems([]);
       } 
     }catch(error){
       console.log('order was not sent');
