@@ -63,7 +63,7 @@ const LoginPage = () => {
     const [ password, setPassword ] = useState('');
     const [loading, setLoading] = useState(false);  
          
-    const { userInformation, isLoggedIn, setIsLoggedIn, setUserInformation, isUserAdmin, setIsUserAdmin} = useContext(ShopContext);
+    const { userInformation, setIsLoggedIn, setUserInformation, setIsUserAdmin} = useContext(ShopContext);
 
     const errorMessage = {
         username: "Incorrect Username",
