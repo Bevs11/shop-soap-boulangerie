@@ -139,7 +139,7 @@ const ProductPage = () => {
                                     <AddIcon />
                                 </button>
                             </AmountContainer>
-                            <Button onClick={goToCart}> Add to Cart
+                            <Button onClick={goToCart} style={{marginLeft: "5px"}}> Add to Cart
                             </Button>
                         </AddContainer>
                     </InfoContainer>
