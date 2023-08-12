@@ -94,6 +94,7 @@ const Checkout = () => {
 
   const getUserData = async() => {
     try {
+      // TODO: change url
       const response = await axios.get(`http://localhost:8010/api/v1/user/${userInformation.username}`, config );
       if (response.status === 200) {
       let newUserObject = userInformation;
@@ -205,8 +206,11 @@ const Checkout = () => {
         
         
         <Form>
-            <Label>Name:</Label>
-            <div>{`${userInformation.firstname} ${userInformation.lastname}`}</div>
+            <Label>Name:</Label> 
+            {userInformation 
+            ? <div>{`${userInformation.firstname} ${userInformation.lastname}`}</div>
+            : <div>not working</div>}
+            
             <Label>Contact Number:</Label>
             <Input 
               type='text'

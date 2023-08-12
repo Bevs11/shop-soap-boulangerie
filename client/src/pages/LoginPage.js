@@ -59,7 +59,8 @@ const LoginPage = () => {
     const [error, setError] = useState(false);    
 
     const [ username, setUsername ] = useState('');
-    const [ password, setPassword ] = useState('')  
+    const [ password, setPassword ] = useState('');
+    const [loading, setLoading] = useState(false);  
          
     const { userInformation, isLoggedIn, setIsLoggedIn, setUserInformation, isUserAdmin, setIsUserAdmin} = useContext(ShopContext);
 
@@ -68,41 +69,50 @@ const LoginPage = () => {
         password: "Incorrect Password"
     }
     
+    const loginHandler = async () => {
+        try {
+            const response = await axios.post( 'https://shop-soap-boulangerie-api.onrender.com/api/v1/user/login', { username, password });
+            setLoading(false);
+            if( response.status === 200 ){      
+                localStorage.setItem('token', response.data.token );
+                let newUserInfo = userInformation;    
+                newUserInfo.username = response.data.username;
+                newUserInfo.userId = response.data.id;              
+                setUserInformation(newUserInfo);
+                setIsLoggedIn(true); // changes login status to true                
+                if (!response.data.isAdmin) {
+                    setIsUserAdmin(true);
+                    navigate('/dashboard');
+                }else {
+                    navigate('/'); 
+                }               
+                alert('You are logged in');    
+            } else {
+                console.log("invalid username or password");
+                setError(true);
+            }
+
+        } catch (error){
+            console.log("invalid password")
+            setError(true);
+        }
+    }
+
+
+
+
     
     function handleClick(e) {
         e.preventDefault();
-        axios.post( 'https://shop-soap-boulangerie-api.onrender.com/api/v1/user/login', { username, password }).then( response => {
+        setLoading(true);
+        loginHandler();
+    //     axios.post( 'https://shop-soap-boulangerie-api.onrender.com/api/v1/user/login', { username, password }).then( response => {
             
-        if( response.status === 200 ){
-      
-            localStorage.setItem('token', response.data.token );
-          
-            let newUserInfo = userInformation;
-
-            newUserInfo.username = response.data.username;
-            newUserInfo.userId = response.data.id;
-          
-            setUserInformation(newUserInfo);
-            setIsLoggedIn(true); // changes login status to true
-            
-            if (!response.data.isAdmin) {
-                setIsUserAdmin(true);
-                navigate('/dashboard');
-            }else {
-                navigate('/'); 
-            }
-           
-            alert('You are logged in');
-
-        } else {
-            console.log("invalid username or password");
-            setError(true);
-        }
-        console.log(response);
-      }).catch((error) => {
-        console.log("invalid password")
-        setError(true);
-      })
+       
+    //     console.log(response);
+    //   }).catch((error) => {
+        
+    //   })
       
       setPassword(null);
       setUsername(null);
