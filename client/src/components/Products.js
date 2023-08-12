@@ -13,9 +13,9 @@ flex-wrap: wrap
 `;
 
   //Component for the ProductList that displays all available products for sale
-const Products = (props) => { 
+const Products = (filters, sort) => { 
   const { soapsData, settingSoapsData} = useContext(ShopContext);
-
+  const [soaps, setSoaps] = useState([]);
 
   const getSoapData = async () => {
     try{
@@ -26,11 +26,29 @@ const Products = (props) => {
     } catch (error) {
       console.log('cannot retrieve list')
     }
-
   }
+
   useEffect(() => {
-    getSoapData();
+    getSoapData() 
   }, []);
+
+  const doSomething = () => {
+    console.log("isFiltered:", filters)
+  };
+  useEffect(()=> {
+    
+    if(filters){
+      doSomething()
+      // .then(function(){
+      //   if (filtered){
+      //     console.log("filtered");
+      //   } else {
+      //     console.log("not filtered");
+      //   }
+        
+      // })
+    }
+  }, [filters])
  
   return (
     <Container>

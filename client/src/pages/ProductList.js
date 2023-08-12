@@ -32,8 +32,12 @@ const ProductList = () => {
   const handleFilters = (e) => {
     const value = e.target.value;
     setFilters({...filters, [e.target.name]: value})
-
   }
+
+
+
+
+
   return (
     <Container>
       <Title>Product List</Title>
@@ -42,15 +46,15 @@ const ProductList = () => {
           <FilterText>Filter Products:</FilterText>
           <Select name="type" onChange={handleFilters}>
             <Option disabled selected>Soap Option</Option>
-            <Option>Fragrant Soap</Option>
-            <Option>Facial Soap</Option>
-            <Option>Assorted Soap</Option>
+            <Option value={"fragrant"}>Fragrant Soap</Option>
+            <Option value={"facial"}>Facial Soap</Option>
+            <Option value={"assorted"}>Assorted Soap</Option>
           </Select>
           <Select name="collection" onChange={handleFilters}>
             <Option disabled selected>Soap Collection</Option>
-            <Option>Best Seller</Option>
-            <Option>Summer Collection</Option>
-            <Option>Rainy Season Collection</Option>
+            <Option value={"best seller"}>Best Seller</Option >
+            <Option value={"summer collection"}>Summer Collection</Option>
+            <Option value={"rainy season collection"}>Rainy Season Collection</Option>
           </Select>
         </Filter>
         <Filter>
