@@ -149,6 +149,7 @@ const Checkout = () => {
 
 const sendOrder = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     let orderDetails = {
       userId: '',
@@ -166,9 +167,11 @@ const sendOrder = async (e) => {
     console.log('order details', orderDetails);
   
     try{
+      
       const response = await axios.post('https://shop-soap-boulangerie-api.onrender.com/api/v1/orders/neworder', orderDetails );
       if (response.status === 201){
-        console.log("order details", response.data)
+        console.log("order details", response.data);
+        setLoading(false);
         alert('order successful');
         navigate('/ordersuccessful');
         setCartItems([]);
@@ -199,7 +202,9 @@ const sendOrder = async (e) => {
 
   return (
     <Container>
-    <Wrapper>
+      {loading 
+      ? <SimpleBackdrop/> 
+      : <Wrapper>
         <Title>ORDER FORM</Title>
         {
           !isLoggedIn && <p>Please register/login first before ordering</p>
@@ -230,7 +235,9 @@ const sendOrder = async (e) => {
                     <Link to='/registration'>REGISTER HERE</Link>
             </div>            
         </Form>
-    </Wrapper>
+        </Wrapper>
+      }
+    
 </Container>
   )
 };
