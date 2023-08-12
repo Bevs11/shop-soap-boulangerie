@@ -84,41 +84,43 @@ const Checkout = () => {
     // input validation
   const {setUserInformation, userInformation, cartItems, isLoggedIn, total} = useContext(ShopContext);
   const [errorMessage, setErrorMessage] = useState('Please fill out all fields');
+  const [name, setName] = useState(null);
 
   const token = localStorage.getItem('token');
   const config = {
-    headers: {
-      Authorization: `Bearers ${token}`
-    }
-  }
-
+    headers: {"Authorization": `Bearers ${token}`}
+    };
+  
   const getUserData = async() => {
     try {
       // TODO: change url
-      const response = await axios.get(`http://localhost:8010/api/v1/user/${userInformation.username}`, config );
+      const response = await axios.get(`https://shop-soap-boulangerie-api.onrender.com/api/v1/user/getuser/${userInformation.username}`, config );
       if (response.status === 200) {
-      let newUserObject = userInformation;
-      
-      newUserObject.firstname = response.data.user[0].firstname;
-      newUserObject.lastname = response.data.user[0].lastname;
-      newUserObject.email = response.data.user[0].email;
+        // let newUserObject = userInformation.user;
+        
+        // newUserObject.firstname = response.data.user[0].firstname;
+        // newUserObject.lastname = response.data.user[0].lastname;
+        // newUserObject.email = response.data.user[0].email;
 
-      setUserInformation(newUserObject);
-  
-      console.log('checkout user', userInformation);
-      console.log('total', total);
+        setUserInformation(response.data.user);
+    
+        console.log('checkout user', response.data.user);
+        console.log('total', total);
       }
     }catch (error) {
-      console.log('Getting User data Unsuccessful');
+      console.log('Getting User data Unsuccessful', error);
     }
   };
 
   useEffect(()=> {
     if (isLoggedIn){
       getUserData();
-      
     }
   }, []);
+
+  useEffect(()=>{
+    setName(`${userInformation.firstname} ${userInformation.lastname}`);
+  },[userInformation])
 
   useEffect(()=> {
     isValid(state);
@@ -201,14 +203,11 @@ const Checkout = () => {
         <Title>ORDER FORM</Title>
         {
           !isLoggedIn && <p>Please register/login first before ordering</p>
-        }
-        
-        
-        
+        }        
         <Form>
             <Label>Name:</Label> 
             {userInformation 
-            ? <div>{`${userInformation.firstname} ${userInformation.lastname}`}</div>
+            ? <div>{name}</div>
             : <div>not working</div>}
             
             <Label>Contact Number:</Label>
