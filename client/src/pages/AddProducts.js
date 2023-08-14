@@ -159,13 +159,13 @@ const AddProducts = () => {
                                     required/>
                             </div>
                             <div>
-                        <InputCheckbox 
-                                type='checkbox'
-                                name='isActive'
-                                onChange={e => isChecked(e)}
-                                required/>
-                        <Label>active</Label>
-                    </div>
+                                <InputCheckbox 
+                                        type='checkbox'
+                                        name='isActive'
+                                        onChange={e => isChecked(e)}
+                                        required/>
+                                <Label>active</Label>
+                            </div>
                     
                         
                         <Button onClick={handleClick}> 
