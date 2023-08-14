@@ -10,13 +10,14 @@ margin: 20px;
 
 
 const LogoutPage = () => {
-  const { setIsLoggedIn} = useContext(ShopContext);
+  const { setIsLoggedIn, setIsUserAdmin} = useContext(ShopContext);
   const  navigate = useNavigate();
 
   console.log("logout page");
 
   const yesHandler = (e) => {
     setIsLoggedIn(false);
+    setIsUserAdmin(false);
     localStorage.removeItem ('token');
     navigate('/');
     window.location.reload(true);        

@@ -172,9 +172,9 @@ const AddProducts = () => {
                           ADD PRODUCT
                         </Button>  
                     </form>
-                    <Button>
-                        <Link to='/dashboard'>Return to Dashboard</Link>                 
-                    </Button>
+                    <a onClick={() => navigate("/dashboard")}>
+                        <Button>Return to Dashboard</Button>
+                    </a>
                 <div>Logout:
                     <Link to='/login'>CLICK HERE</Link>
                 </div>

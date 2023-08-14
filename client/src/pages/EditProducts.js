@@ -1,13 +1,21 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
+const Container = styled.div`
+width: 100%;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+padding: 20px 0; 
+`;
 const Title = styled.h1`
 margin: 20px;
 `;
 const Input = styled.input`
 flex: 1;
-min-width: 50%;
+width: 500px;
 height: 20px;
 margin: 10px 10px 0 0;
 `;
@@ -18,7 +26,7 @@ font-family: helvetica;
 font-weight: 200;
 `;
 const Button = styled.button`
-width: 95%;
+width: 500px;
 background-color: rgb(230, 230, 230);
 padding: 5px;
 cursor: pointer;
@@ -58,9 +66,8 @@ const EditProducts = () => {
     };
 
   return (
-    <div>
+    <Container>
         <Title>EditProducts</Title>
-        <Note>Feature Not Yet Available</Note>
         <form>         
             <div>
                 <Label>Name of Product:</Label>
@@ -96,15 +103,16 @@ const EditProducts = () => {
                     placeholder='price'
                     onChange={onChange}
                     required/>
-            </div> 
-            
-                        
-            <Button >Edit Product</Button>  
-                    </form>
-        <Button>
-            <Link to='/dashboard'>Return to Dashboard</Link>                 
-        </Button>
-    </div>
+            </div>
+            <div  style={{display:"flex", justifyContent:"center"}}>
+              <Button>Edit Product</Button>    
+            </div>                        
+              
+        </form>
+        <a onClick={() => navigate("/dashboard")}>
+          <Button>Return to Dashboard</Button>
+        </a>
+    </Container>
   )
 };
 

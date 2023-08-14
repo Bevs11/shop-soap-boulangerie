@@ -81,7 +81,7 @@ const LoginPage = () => {
                 newUserInfo.userId = response.data.id;              
                 setUserInformation(newUserInfo);
                 setIsLoggedIn(true); // changes login status to true                
-                if (!response.data.isAdmin) {
+                if (response.data.isAdmin) {
                     setIsUserAdmin(true);
                     navigate('/dashboard');
                 }else {
