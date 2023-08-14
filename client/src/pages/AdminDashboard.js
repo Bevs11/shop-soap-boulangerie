@@ -13,12 +13,15 @@ padding: 20px 0;
 `;
 const Wrapper = styled.div`
 width: 80%;
+display: flex;
+flex-direction: column;
+justify-content: center;
 `;
 const Title = styled.h1`
 margin: 20px;
 `;
 const Button = styled.button`
-width: 95%;
+width: 500px;
 background-color: rgb(230, 230, 230);
 padding: 5px;
 cursor: pointer;
@@ -33,34 +36,38 @@ margin-bottom: 20px;
     background-color: pink;
 }
 `;
+const ButtonContainer = styled.a`
+display: flex;
+justify-content: center;
+`;
 
 const DashboardMenu = () => {
-  const { userInformation} = useContext(ShopContext);
+  const navigate = useNavigate();
 
   return (
-    <div>
+    
         <Container>
             <Title>ADMIN DASHBOARD</Title>
-            <p>{`Hello, ${userInformation.username} `}</p>
             <Wrapper>
-                <Button>
-                  <Link to='/addproducts'>Add Products</Link>
-                </Button>
-                <Button>
-                  <Link to='/removeproducts'>Remove Products</Link>                 
-                </Button>
-                <Button>
-                  <Link to='/editproducts'>Edit Products</Link>
-                </Button>
-                <Button>
-                  <Link to='/newsletterlist'>Get list of emails for NewsLetter</Link>
-                </Button>
-                <Button>
-                  <Link to='/orderslist'>Get list of Orders</Link>                 
-                </Button>
+                <ButtonContainer onClick={() => navigate("/addproducts")}>
+                  <Button>Add Products</Button>
+                </ButtonContainer>
+                <ButtonContainer onClick={() => navigate("/removeproducts")}>
+                  <Button>Remove Products</Button>
+                </ButtonContainer>
+                <ButtonContainer onClick={() => navigate("/editproducts")}>
+                  <Button>Edit Products</Button>
+                </ButtonContainer>
+                <ButtonContainer onClick={() => navigate("/newsletterlist")}>
+                  <Button>Get list of emails for NewsLetter</Button>
+                </ButtonContainer>
+                <ButtonContainer onClick={() => navigate("/orderslist")}>
+                  <Button>Get list of Orders</Button>
+                </ButtonContainer>
+                
             </Wrapper>
         </Container>
-    </div>
+   
   )
 };
 

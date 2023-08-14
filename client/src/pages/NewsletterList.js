@@ -4,7 +4,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 
-
+const Container = styled.div`
+width: 100vw;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+padding: 20px 0; 
+`;
 const Title = styled.h1`
 margin: 20px;
 `;
@@ -13,11 +20,10 @@ border: 1px solid black;
 width: 50%;
 background-color: rgb(211, 211, 211);
 height: 500px;
-margin-left: 25%;
 `;
 
 const Button = styled.button`
-width: 95%;
+width: 500px;
 background-color: rgb(230, 230, 230);
 padding: 5px;
 cursor: pointer;
@@ -34,7 +40,7 @@ margin-bottom: 20px;
 `;
 
 const NewsletterList = () => {
-
+  const navigate = useNavigate();
   const [newsletterList, setNewsletterList] = useState([]);
   
   
@@ -53,7 +59,7 @@ const NewsletterList = () => {
   };
 
   return (
-    <div>
+    <Container>
         <Title>List of Emails for NewsLetter</Title>
         <Wrapper>
             {
@@ -62,10 +68,10 @@ const NewsletterList = () => {
               })
             }
         </Wrapper>
-        <Button>
-            <Link to='/dashboard'>Return to Dashboard</Link>                 
-        </Button>
-    </div>
+        <a onClick={() => navigate("/dashboard")}>
+          <Button>Return to Dashboard</Button>
+        </a>
+    </Container>
   )
 };
 

@@ -4,11 +4,19 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Lists from '../components/Lists';
 
+const Container = styled.div`
+width: 100vw;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+padding: 20px 0; 
+`;
 const Title = styled.h1`
 margin: 20px;
 `;
 const Button = styled.button`
-width: 50%;
+width: 500px;
 background-color: rgb(230, 230, 230);
 padding: 5px;
 cursor: pointer;
@@ -28,7 +36,6 @@ border: 1px solid black;
 width: 50%;
 background-color: rgb(211, 211, 211);
 height: 500px;
-margin-left: 25%;
 `;
 const Info = styled.div`
 border: 1px solid black;
@@ -68,10 +75,11 @@ font-weight: 200;
 `;
 const Form = styled.div`
 width: 80%;
-margin-left: 10%;
+
 `;
 
 const OrdersList = () => {
+  const navigate = useNavigate();
   const [id, setId] = useState('');
   const [orderList, setOrderList] = useState([]);
   const [orderDetails, setOrderDetails] = useState([]);
@@ -101,7 +109,7 @@ const OrdersList = () => {
   };
 
   return (
-    <div>
+    <Container>
         <Title>List of Pending Orders</Title>
         <Wrapper>
             {
@@ -122,16 +130,19 @@ const OrdersList = () => {
                 onChange={e => setId(e.target.value)}
                 required/>
             <SearchButton onClick={searchData}>Search</SearchButton>
-            <Wrapper>
-            {
-                <Lists userId={orderDetails.userId} amount={orderDetails.amount} address={orderDetails.address} contact={orderDetails.contact} status={orderDetails.status} />
-            }
-            </Wrapper>       
+            <div style={{display: "flex", justifyContent: "center"}}>
+              <Wrapper>
+              {
+                  <Lists userId={orderDetails.userId} amount={orderDetails.amount} address={orderDetails.address} contact={orderDetails.contact} status={orderDetails.status} />
+              }
+              </Wrapper> 
+            </div>
+                  
         </Form>
-        <Button>
-            <Link to='/dashboard'>Return to Dashboard</Link>                 
-        </Button>
-    </div>
+        <a onClick={() => navigate("/dashboard")}>
+          <Button>Return to Dashboard</Button>
+        </a>
+    </Container>
   )
 };
 

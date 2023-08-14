@@ -12,11 +12,6 @@ align-items: center;
 justify-content: center;
 padding: 20px 0; 
 `;
-const Wrapper = styled.div`
-width: 80%;
-`;
-const Options = styled.div`
-`;
 const Title = styled.h1`
 margin: 20px;
 `;
@@ -50,6 +45,7 @@ margin-bottom: 20px;
 `;
 
 const RemoveProducts = () => {
+    const navigate = useNavigate();
     const [itemCode, setItemCode] = useState('');
  
     const removeItem = async() => {
@@ -69,7 +65,7 @@ const RemoveProducts = () => {
       };
    
   return (
-    <div>
+    <Container>
         <Title>REMOVE PRODUCTS</Title>
         <form>
             <div>
@@ -85,10 +81,10 @@ const RemoveProducts = () => {
              REMOVE ITEM
             </Button> 
         </form>
-        <Button>
-            <Link to='/dashboard'>Return to Dashboard</Link>                 
-        </Button>
-    </div>
+        <a onClick={() => navigate("/dashboard")}>
+          <Button>Return to Dashboard</Button>
+        </a>
+    </Container>
   )
 };
 
