@@ -100,7 +100,7 @@ const NavBar = () => {
               
                 {isUserAdmin && 
                 <NavigationContainer>
-                    <NavigationItem onClick={() => navigate("/dashboard")}></NavigationItem>
+                    <NavigationItem onClick={() => navigate("/dashboard")}>Dashboard</NavigationItem>
                 </NavigationContainer>
                 }                                     
                 <NavigationContainer>
