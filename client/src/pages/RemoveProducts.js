@@ -47,15 +47,20 @@ margin-bottom: 20px;
 const RemoveProducts = () => {
     const navigate = useNavigate();
     const [itemCode, setItemCode] = useState('');
+    const token = localStorage.getItem('token');
+    const config = {
+      headers: {"Authorization": `Bearers ${token}`}
+    };
  
     const removeItem = async() => {
         try {
-          const response = await axios.post('http://localhost:8010/api/v1/products/removeproduct', { itemCode} );
+          const response = await axios.post(`https://shop-soap-boulangerie-api.onrender.com/api/v1/products/removeproduct/${itemCode}`, {}, config );
           if (response) {
               alert('product is removed');
           }
+          console.log("response:", response);
         } catch (error) {
-            console.log(error);
+          console.log(error);
           alert('cannot remove product');
         }
       }
@@ -74,7 +79,7 @@ const RemoveProducts = () => {
                     type='text'
                     name='productId'
                     placeholder='item code'
-                    onChange={e => setItemCode(e)}
+                    onChange={(e) => setItemCode(e.target.value)}
                 />
             </div>
             <Button onClick={handleClick}> 
