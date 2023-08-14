@@ -101,7 +101,7 @@ const EditProducts = () => {
 
   return (
     <Container>
-        <Title>EditProducts</Title>
+        <Title>Edit Products</Title>
         <form>         
             <div>
                 <Label>Name of Product:</Label>
@@ -138,14 +138,8 @@ const EditProducts = () => {
                     onChange={onChange}
                     required/>
             </div>
-            <div>
-                <Label>Categories</Label>
-                <Input 
-                    type='text'
-                    name='categories'
-                    placeholder='price'
-                    onChange={onChange}
-                    required/>
+            <div style={{marginTop: "10px"}}>
+                <Label >Categories</Label>
             </div>
             <div>
                 <InputCheckbox 
