@@ -53,11 +53,12 @@ margin: 10px;
 `;
 
 const AddProducts = () => {
-
-    
     const  navigate = useNavigate();
         //navigate to dashboard
-
+    const token = localStorage.getItem('token');
+    const config = {
+        headers: {"Authorization": `Bearers ${token}`}
+    };
     function handleClickRemove(e) {
         e.preventDefault();
         alert("Item Removed"); 
@@ -89,12 +90,12 @@ const AddProducts = () => {
         dispatch(action);
     };
     function reducer(state, action) {
-        console.log(action);
         return {...state, [action.input] : action.value};
     };
     const sendData = async() => {
         try {
-          const response = await axios.post('http://localhost:8010/api/v1/products/addproduct', state );
+          const response = await axios.post('https://shop-soap-boulangerie-api.onrender.com/api/v1/products/addproduct', state, config );
+          console.log(response)
           alert('product is added')
         } catch (error) {
           alert('cannot send product')
@@ -102,7 +103,6 @@ const AddProducts = () => {
       };
     function handleClick(e) {
         e.preventDefault();
-        console.log(state);
         sendData();
     };
 
@@ -175,9 +175,6 @@ const AddProducts = () => {
                     <a onClick={() => navigate("/dashboard")}>
                         <Button>Return to Dashboard</Button>
                     </a>
-                <div>Logout:
-                    <Link to='/login'>CLICK HERE</Link>
-                </div>
             </Wrapper>
         </Container>
     </div>
