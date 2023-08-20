@@ -42,29 +42,34 @@ margin-bottom: 20px;
 const NewsletterList = () => {
   const navigate = useNavigate();
   const [newsletterList, setNewsletterList] = useState([]);
+  const token = localStorage.getItem('token');
+  const config = {
+      headers: {"Authorization": `Bearers ${token}`}
+  };
   
   
-  useEffect(() => {
-    fetchData();
-  }, []);
 
-  const fetchData = async() => {
+
+  const fetchData = async(e) => {
+    e.preventDefault();
     try {
-      const response = await axios.get('https://shop-soap-boulangerie-api.onrender.com/api/v1/emails/addemail' );
-      setNewsletterList(response.data.email);
-      console.log(newsletterList);
+      const response = await axios.get('https://shop-soap-boulangerie-api.onrender.com/api/v1/emails', config );
+      setNewsletterList(response.data.emailList);
+      console.log("newsletterlist:", response);
     } catch (error) {
-      console.log ('cannot retrieve list')
+      console.log ('cannot retrieve list', error)
     }
+    console.log("newsletterlist:", newsletterList);
   };
 
   return (
     <Container>
         <Title>List of Emails for NewsLetter</Title>
+        <Button onClick={fetchData}>Get Data? </Button>
         <Wrapper>
             {
               newsletterList.map(list => {
-                return <p>{list.email}</p>
+                return <p>{list}</p>
               })
             }
         </Wrapper>

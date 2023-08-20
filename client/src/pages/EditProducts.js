@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useReducer } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Container = styled.div`
 width: 100%;
@@ -45,29 +46,62 @@ const Note = styled.div`
 color: red;
 font-size: 20px;
 `;
+const InputCheckbox = styled.input`
+margin: 10px;
+`;
+
+const initialState = {
+    title: '',
+    img: '',
+    description: '',
+    price: 0,
+    productId: '',
+    isActive: false
+};
+
 
 const EditProducts = () => {
 
-    const  navigate = useNavigate();
-        //navigate to dashboard
+    const  navigate = useNavigate(); //navigate to dashboard
+    const [state, dispatch] = useReducer(reducer, initialState);
+    const [body, setBody] = useState({});
     
-    function handleClick(e) {
+   
+    const handleClickEdit = async (e) => {
         e.preventDefault();
-        alert("Add Item Successful");
-    };
-    function handleClickRemove(e) {
-        e.preventDefault();
+        try{
+            const response = axios.put(`https://shop-soap-boulangerie-api.onrender.com/api/v1/products/editproduct/a001`, body);
+            console.log(response);
+        }catch(err){
+            console.log(err);
+
+        }
         alert("Item Removed");
     };    
 
+    function reducer(state, action) {
+        return {...state, [action.input] : action.value};
+    };
        // event handler for all inputs
     function onChange(e) {
-        
+        const action = {
+            input: e.target.name,
+            value: e.target.value
+        }
+
+        dispatch(action);
+    };
+    function isChecked(e){
+        const action = {
+            input: e.target.name,
+            value: e.target.checked
+        }
+        dispatch(action);
     };
 
   return (
     <Container>
-        <Title>EditProducts</Title>
+        <Title>Edit Products</Title>
         <form>         
             <div>
                 <Label>Name of Product:</Label>
@@ -103,6 +137,36 @@ const EditProducts = () => {
                     placeholder='price'
                     onChange={onChange}
                     required/>
+            </div>
+            <div style={{marginTop: "10px"}}>
+                <Label >Categories</Label>
+            </div>
+            <div>
+                <InputCheckbox 
+                    type='checkbox'
+                    name='categories'
+                    value= "body soap"
+                    onChange={e => isChecked(e)}
+                    required/>
+                <Label>Body Soap</Label>
+            </div>
+            <div>
+                <InputCheckbox 
+                    type='checkbox'
+                    name='categories'
+                    value= "fragrant soap"
+                    onChange={e => isChecked(e)}
+                    required/>
+                <Label>Fragrant Soap</Label>
+            </div>
+            <div>
+                <InputCheckbox 
+                    type='checkbox'
+                    name='categories'
+                    value= "facial soap"
+                    onChange={e => isChecked(e)}
+                    required/>
+                <Label>Facial Soap</Label>
             </div>
             <div  style={{display:"flex", justifyContent:"center"}}>
               <Button>Edit Product</Button>    

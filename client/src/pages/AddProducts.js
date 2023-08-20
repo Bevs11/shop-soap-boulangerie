@@ -2,6 +2,11 @@ import React, { useReducer, useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from "axios";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "../firebase";
+import { v4 } from "uuid";
+import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
+import SimpleBackdrop from "../components/SimpleBackdrop";
 
 
 const Container = styled.div`
@@ -51,13 +56,27 @@ margin-bottom: 20px;
 const InputCheckbox = styled.input`
 margin: 10px;
 `;
+const ImageContainer = styled.div`
+width: 350px;
+height: auto;
+background-color: grey;
+
+`;
+
+const Image = styled.img`
+
+`;
 
 const AddProducts = () => {
-
-    
-    const  navigate = useNavigate();
-        //navigate to dashboard
-
+    const  navigate = useNavigate(); //navigate to dashboard
+    const [file, setFile] = useState(null);
+    const [image, setImage] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [categories, setCategories] = useState([]);
+    const token = localStorage.getItem('token');
+    const config = {
+        headers: {"Authorization": `Bearers ${token}`}
+    };
     function handleClickRemove(e) {
         e.preventDefault();
         alert("Item Removed"); 
@@ -73,12 +92,11 @@ const AddProducts = () => {
     };
 
     const [state, dispatch] = useReducer(reducer, initialState);
-    function onChange(e) {
+    function onChange(e) {              
         const action = {
             input: e.target.name,
             value: e.target.value
-        }
-
+        }                
         dispatch(action);
     };
     function isChecked(e){
@@ -88,31 +106,83 @@ const AddProducts = () => {
         }
         dispatch(action);
     };
+    function categoryHandler(e){
+
+        if(e.target.checked){
+            if(!categories.includes(e.target.value)){
+                setCategories([...categories, e.target.value ]);
+                console.log("categories", e.target.value);
+            }
+        }
+        dispatch({input: "categories", value: categories});
+    }
     function reducer(state, action) {
-        console.log(action);
         return {...state, [action.input] : action.value};
     };
     const sendData = async() => {
+        dispatch({input: "img", value: image});
+        // console.log(state);
+        console.log("categories", categories);
+        setLoading(true);
         try {
-          const response = await axios.post('http://localhost:8010/api/v1/products/addproduct', state );
+          const response = await axios.post('https://shop-soap-boulangerie-api.onrender.com/api/v1/products/addproduct', state, config );
+          console.log(response)
           alert('product is added')
         } catch (error) {
-          alert('cannot send product')
+          alert('cannot send product. Product ID invalid');
         }
+        setLoading(false);
       };
     function handleClick(e) {
         e.preventDefault();
-        console.log(state);
         sendData();
     };
 
+    const uploadImage = () => {
+        
+        if (file == null) return;
+        const fileName = `trialUpload/${file.name + v4()}`;
+        const imageRef = ref(storage, fileName);
+        uploadBytes(imageRef, file).then((item) => {
+          getDownloadURL(item.ref).then((url) => {
+            setImage(url);
+            
+          });
+        });
+      };
+
   return (
     <div>
+        {loading 
+        ? <SimpleBackdrop/>
+        :               
         <Container>
             <Title>ADMIN DASHBOARD</Title>
             <Wrapper>
                     <form>
                         <h1>Add an item</h1>
+                            <ImageContainer>
+                                <div>
+                                {
+                                    file ? (
+                                        <img src={image} style={{ maxWidth: "100%", maxHeight: "100%" }} />
+                                      ) : (
+                                        <AddPhotoAlternateIcon style={{width: "60%", height: "60%"}}/>
+                                      )
+                                }
+                                </div>
+                                <Image/>
+                                <div style={{display: "flex", flexDirection: "column", justifyContent: "center", alignItems:"center"}}>
+                                    <input
+                                    style={{ marginBottom: "1rem" }}
+                                    type="file"
+                                    id="file"
+                                    accept=".png,.jpeg,.jpg"
+                                    onChange={(e) => setFile(e.target.files[0])}
+                                    />
+                                    <button onClick={uploadImage}>Upload</button>
+                                </div>
+                            </ImageContainer>
                             <div>
                                 <Label>Name of Item:</Label>
                                 <Input 
@@ -127,6 +197,7 @@ const AddProducts = () => {
                                 <Input 
                                     type='text'
                                     name='img'
+                                    value={image}
                                     placeholder='image url'
                                     onChange={onChange}
                                     required/>
@@ -159,13 +230,43 @@ const AddProducts = () => {
                                     required/>
                             </div>
                             <div>
-                        <InputCheckbox 
-                                type='checkbox'
-                                name='isActive'
-                                onChange={e => isChecked(e)}
-                                required/>
-                        <Label>active</Label>
-                    </div>
+                                <InputCheckbox 
+                                        type='checkbox'
+                                        name='isActive'
+                                        onChange={e => isChecked(e)}
+                                        required/>
+                                <Label>active</Label>
+                            </div>
+                            <div style={{marginTop: "10px"}}>
+                                <Label >Categories</Label>
+                            </div>
+                            <div>
+                                <InputCheckbox 
+                                    type='checkbox'
+                                    name='categories'
+                                    value= "body soap"
+                                    onChange={e => categoryHandler(e)}
+                                    required/>
+                                <Label>Body Soap</Label>
+                            </div>
+                            <div>
+                                <InputCheckbox 
+                                    type='checkbox'
+                                    name='categories'
+                                    value= "fragrant soap"
+                                    onChange={e => categoryHandler(e)}
+                                    required/>
+                                <Label>Fragrant Soap</Label>
+                            </div>
+                            <div>
+                                <InputCheckbox 
+                                    type='checkbox'
+                                    name='categories'
+                                    value= "facial soap"
+                                    onChange={e => categoryHandler(e)}
+                                    required/>
+                                <Label>Facial Soap</Label>
+                            </div>
                     
                         
                         <Button onClick={handleClick}> 
@@ -175,11 +276,9 @@ const AddProducts = () => {
                     <a onClick={() => navigate("/dashboard")}>
                         <Button>Return to Dashboard</Button>
                     </a>
-                <div>Logout:
-                    <Link to='/login'>CLICK HERE</Link>
-                </div>
             </Wrapper>
         </Container>
+        }
     </div>
   )
 };
