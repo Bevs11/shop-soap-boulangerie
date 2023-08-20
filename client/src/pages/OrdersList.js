@@ -83,16 +83,19 @@ const OrdersList = () => {
   const [id, setId] = useState('');
   const [orderList, setOrderList] = useState([]);
   const [orderDetails, setOrderDetails] = useState([]);
+  const token = localStorage.getItem('token');
+  const config = {
+      headers: {"Authorization": `Bearers ${token}`}
+  };
   
-  useEffect(() => {
-    fetchData();
-  }, []);
+  
 
-  const fetchData = async() => {
+  const fetchData = async(e) => {
+    e.preventDefault();
     try {
-      const response = await axios.get('http://localhost:8010/api/v1/orders/pending' );
-      setOrderList(response.data.order);
-      console.log(response.data.order);
+      const response = await axios.get('https://shop-soap-boulangerie-api.onrender.com/api/v1/orders/pending', config);
+      setOrderList(response.data.orders);
+      //console.log("response", response);
     } catch (error) {
       console.log ('cannot retrieve order list')
     }
@@ -100,17 +103,18 @@ const OrdersList = () => {
   
   const searchData = async() => {
     try {
-      const response = await axios.get(`http://localhost:8010/api/v1/orders/ordernumber/${id}` );
+      const response = await axios.get(`https://shop-soap-boulangerie-api.onrender.com/api/v1/orders/ordernumber/${id}`, config );
       setOrderDetails(response.data.order);
-      console.log(response.data.order);
+      console.log(response);
     } catch (error) {
-      console.log ('cannot retrieve order list')
+      console.log ('cannot retrieve order', error);
     }
   };
 
   return (
     <Container>
         <Title>List of Pending Orders</Title>
+        <Button onClick={fetchData}>Get Data?</Button>
         <Wrapper>
             {
                 orderList.map(orders => {
@@ -133,7 +137,9 @@ const OrdersList = () => {
             <div style={{display: "flex", justifyContent: "center"}}>
               <Wrapper>
               {
-                  <Lists userId={orderDetails.userId} amount={orderDetails.amount} address={orderDetails.address} contact={orderDetails.contact} status={orderDetails.status} />
+                orderDetails
+                &&  <Lists userId={orderDetails.userId} amount={orderDetails.amount} address={orderDetails.address} contact={orderDetails.contact} status={orderDetails.status} />
+
               }
               </Wrapper> 
             </div>
