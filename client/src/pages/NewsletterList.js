@@ -53,12 +53,13 @@ const NewsletterList = () => {
   const fetchData = async(e) => {
     e.preventDefault();
     try {
-      const response = await axios.get('https://shop-soap-boulangerie-api.onrender.com/api/v1/emails', {}, config );
+      const response = await axios.get('https://shop-soap-boulangerie-api.onrender.com/api/v1/emails', config );
       setNewsletterList(response.data.emailList);
       console.log("newsletterlist:", response);
     } catch (error) {
       console.log ('cannot retrieve list', error)
     }
+    console.log("newsletterlist:", newsletterList);
   };
 
   return (
@@ -68,7 +69,7 @@ const NewsletterList = () => {
         <Wrapper>
             {
               newsletterList.map(list => {
-                return <p>{list.email}</p>
+                return <p>{list}</p>
               })
             }
         </Wrapper>
