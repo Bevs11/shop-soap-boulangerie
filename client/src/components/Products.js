@@ -37,11 +37,9 @@ const Products = (filters, sort) => {
     getSoapData() 
   }, []);
 
-  console.log("filter", filters.filters.sort);
   useEffect(()=> {
         if(soapsData){
           if (filters){
-            console.log("filters", soapsData, filters.filters.type);
             let newData;
             if (filters.filters.type){
               const findCategory = (item, filter) => {

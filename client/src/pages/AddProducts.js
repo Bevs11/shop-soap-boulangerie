@@ -72,6 +72,7 @@ const AddProducts = () => {
     const [file, setFile] = useState(null);
     const [image, setImage] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [categories, setCategories] = useState([]);
     const token = localStorage.getItem('token');
     const config = {
         headers: {"Authorization": `Bearers ${token}`}
@@ -105,12 +106,23 @@ const AddProducts = () => {
         }
         dispatch(action);
     };
+    function categoryHandler(e){
+
+        if(e.target.checked){
+            if(!categories.includes(e.target.value)){
+                setCategories([...categories, e.target.value ]);
+                console.log("categories", e.target.value);
+            }
+        }
+        dispatch({input: "categories", value: categories});
+    }
     function reducer(state, action) {
         return {...state, [action.input] : action.value};
     };
     const sendData = async() => {
         dispatch({input: "img", value: image});
-        console.log(state);
+        // console.log(state);
+        console.log("categories", categories);
         setLoading(true);
         try {
           const response = await axios.post('https://shop-soap-boulangerie-api.onrender.com/api/v1/products/addproduct', state, config );
@@ -224,6 +236,36 @@ const AddProducts = () => {
                                         onChange={e => isChecked(e)}
                                         required/>
                                 <Label>active</Label>
+                            </div>
+                            <div style={{marginTop: "10px"}}>
+                                <Label >Categories</Label>
+                            </div>
+                            <div>
+                                <InputCheckbox 
+                                    type='checkbox'
+                                    name='categories'
+                                    value= "body soap"
+                                    onChange={e => categoryHandler(e)}
+                                    required/>
+                                <Label>Body Soap</Label>
+                            </div>
+                            <div>
+                                <InputCheckbox 
+                                    type='checkbox'
+                                    name='categories'
+                                    value= "fragrant soap"
+                                    onChange={e => categoryHandler(e)}
+                                    required/>
+                                <Label>Fragrant Soap</Label>
+                            </div>
+                            <div>
+                                <InputCheckbox 
+                                    type='checkbox'
+                                    name='categories'
+                                    value= "facial soap"
+                                    onChange={e => categoryHandler(e)}
+                                    required/>
+                                <Label>Facial Soap</Label>
                             </div>
                     
                         
