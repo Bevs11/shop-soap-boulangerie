@@ -60,11 +60,12 @@ const ImageContainer = styled.div`
 width: 350px;
 height: auto;
 background-color: grey;
-
+display: flex;
+flex-direction: column;
+justify-content: center;
 `;
 
 const Image = styled.img`
-
 `;
 
 const AddProducts = () => {
@@ -162,17 +163,17 @@ const AddProducts = () => {
                     <form>
                         <h1>Add an item</h1>
                             <ImageContainer>
-                                <div>
+                                <div style={{width: "100%", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", marginBottom: "5px"}}>
                                 {
-                                    file ? (
+                                    image ? (
                                         <img src={image} style={{ maxWidth: "100%", maxHeight: "100%" }} />
                                       ) : (
                                         <AddPhotoAlternateIcon style={{width: "60%", height: "60%"}}/>
                                       )
                                 }
                                 </div>
-                                <Image/>
-                                <div style={{display: "flex", flexDirection: "column", justifyContent: "center", alignItems:"center"}}>
+                                
+                                <div style={{display: "flex", flexDirection: "column", justifyContent: "center", alignItems:"center", width: "100%"}}>
                                     <input
                                     style={{ marginBottom: "1rem" }}
                                     type="file"
@@ -180,7 +181,7 @@ const AddProducts = () => {
                                     accept=".png,.jpeg,.jpg"
                                     onChange={(e) => setFile(e.target.files[0])}
                                     />
-                                    <button onClick={uploadImage}>Upload</button>
+                                    <button onClick={uploadImage} style={{marginBottom: "5px"}}>Upload</button>
                                 </div>
                             </ImageContainer>
                             <div>

@@ -55,9 +55,8 @@ const NewsletterList = () => {
     try {
       const response = await axios.get('https://shop-soap-boulangerie-api.onrender.com/api/v1/emails', config );
       setNewsletterList(response.data.emailList);
-      console.log("newsletterlist:", response);
     } catch (error) {
-      console.log ('cannot retrieve list', error)
+      console.error('cannot retrieve list', error)
     }
     console.log("newsletterlist:", newsletterList);
   };
