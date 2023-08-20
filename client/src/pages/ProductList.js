@@ -40,7 +40,6 @@ const ProductList = () => {
 
   useEffect(()=>{
     setSoapFilters(filters)
-    console.log("filters", filters)
   },[filters])
 
   return (
@@ -56,12 +55,6 @@ const ProductList = () => {
             <Option value={"body soap"}>Body Soap</Option>
             <Option value={"all"}>All</Option>
           </Select>
-          {/*<Select name="collection" onChange={handleFilters}>
-            <Option disabled selected>Soap Collection</Option>
-            <Option value={"best seller"}>Best Seller</Option >
-            <Option value={"summer collection"}>Summer Collection</Option>
-            <Option value={"rainy season collection"}>Rainy Season Collection</Option>
-            </Select> */}
         </Filter>
         <Filter>
           <FilterText>Sort Products:</FilterText>

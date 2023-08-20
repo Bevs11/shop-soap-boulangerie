@@ -53,9 +53,6 @@ const Products = (filters, sort) => {
             }else{
               newData = [...soapsData]
             }
-            
-            //console.log("new data", newData);
-            console.log("sort", sort);
             if (filters.filters.sort === "ascending" || filters.filters.sort === "descending"){
               if (filters.filters.sort === "ascending"){
                 newData.sort((a,b) =>{return a.price - b.price})
